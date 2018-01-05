@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Elo.WebApp.Controllers
 {
     [Route("api/elo")]
-    public class RatingsController : Controller
+    public class EloController : Controller
     {
         [HttpGet("ratings")]
         public IEnumerable<Models.Dto.PlayerRating> GetPlayerRatings()
