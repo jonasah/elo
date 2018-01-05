@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Elo.DbHandler;
@@ -35,43 +36,47 @@ namespace Elo.WebApp.Controllers
         [HttpPost("gameresults")]
         public void PostGameResult([FromBody]GameResult gameResult)
         {
-            if (gameResult == null || gameResult.Winner == null || gameResult.Loser == null)
+            try
+            {
+                ValidateGameResult(gameResult);
+
+                // fetch players from database
+                var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
+                var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
+
+                // convert to Elo.Lib.Players and calculate new ratings
+                var p1 = winningPlayer.ToEloLibPlayer();
+                var p2 = losingPlayer.ToEloLibPlayer();
+                p1.WinsAgainst(p2);
+
+                winningPlayer.CurrentRating = p1.Rating;
+                losingPlayer.CurrentRating = p2.Rating;
+
+                // update database
+                GameHandler.AddGame(new Game
+                {
+                    Scores = new List<GameScore>
+                    {
+                        new GameScore
+                        {
+                            PlayerId = winningPlayer.Id,
+                            Score = 1.0
+                        },
+                        new GameScore
+                        {
+                            PlayerId = losingPlayer.Id,
+                            Score = 0.0
+                        }
+                    }
+                });
+
+                PlayerHandler.UpdatePlayer(winningPlayer);
+                PlayerHandler.UpdatePlayer(losingPlayer);
+            }
+            catch (Exception /*ex*/)
             {
                 return;
             }
-
-            // fetch players from database
-            var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
-            var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
-
-            // convert to Elo.Lib.Players and calculate new ratings
-            var p1 = winningPlayer.ToEloLibPlayer();
-            var p2 = losingPlayer.ToEloLibPlayer();
-            p1.WinsAgainst(p2);
-
-            winningPlayer.CurrentRating = p1.Rating;
-            losingPlayer.CurrentRating = p2.Rating;
-
-            // update database
-            GameHandler.AddGame(new Game
-            {
-                Scores = new List<GameScore>
-                {
-                    new GameScore
-                    {
-                        PlayerId = winningPlayer.Id,
-                        Score = 1.0
-                    },
-                    new GameScore
-                    {
-                        PlayerId = losingPlayer.Id,
-                        Score = 0.0
-                    }
-                }
-            });
-
-            PlayerHandler.UpdatePlayer(winningPlayer);
-            PlayerHandler.UpdatePlayer(losingPlayer);
         }
 
         private Player GetOrCreatePlayer(string name)
@@ -88,5 +93,28 @@ namespace Elo.WebApp.Controllers
 
             return player;
         }
+
+        private void ValidateGameResult(GameResult gameResult)
+        {
+            if (gameResult == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (gameResult.Winner.IsNullOrEmpty() || gameResult.Loser.IsNullOrEmpty())
+            {
+                throw new ArgumentException("Winner and/or loser is not set");
+            }
+
+            if (gameResult.Winner == gameResult.Loser)
+            {
+                throw new ArgumentException("Winner and loser cannot be the same player");
+            }
+        }
+    }
+
+    internal static class Extensions
+    {
+        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
     }
 }
