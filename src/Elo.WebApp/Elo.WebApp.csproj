@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\components\GameResultForm.tsx" />
-    <None Remove="ClientApp\components\PlayerRatingsTable.tsx" />
+    <None Remove="ClientApp\components\RatingsTable.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\components\GameResultForm.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\PlayerRatingsTable.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\RatingsTable.tsx" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

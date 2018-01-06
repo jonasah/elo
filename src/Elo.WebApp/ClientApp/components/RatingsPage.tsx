@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import { GameResultForm } from './GameResultForm';
-import { PlayerRatingsTable } from './PlayerRatingsTable';
+import { RatingsTable } from './RatingsTable';
 
-export class Home extends React.Component<RouteComponentProps<{}>, {}> {
+export class RatingsPage extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
         return <div>
-            <h1>Player ratings</h1>
+            <h1>Ratings</h1>
             <div>
                 <GameResultForm />
             </div>
             <div>
-                <PlayerRatingsTable/>
+                <RatingsTable/>
             </div>
         </div>;
     }

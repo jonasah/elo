@@ -10,11 +10,11 @@ interface PlayerRatingDto {
     losses: number;
 }
 
-interface PlayerRatingsTableState {
+interface RatingsTableState {
     ratings: PlayerRatingDto[];
 }
 
-export class PlayerRatingsTable extends React.Component<{}, PlayerRatingsTableState> {
+export class RatingsTable extends React.Component<{}, RatingsTableState> {
     timerId: number;
 
     constructor() {
