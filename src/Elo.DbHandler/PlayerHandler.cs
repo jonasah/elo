@@ -25,10 +25,14 @@ namespace Elo.DbHandler
         {
             using (var db = new EloDbContext())
             {
-                return db.Players
+                var player = db.Players
                     .Include(p => p.Ratings)
                     .Include(p => p.GameScores)
                     .FirstOrDefault(p => p.Name == name);
+
+                SortRatings(player);
+
+                return player;
             }
         }
 
@@ -36,10 +40,14 @@ namespace Elo.DbHandler
         {
             using (var db = new EloDbContext())
             {
-                return db.Players
+                var players = db.Players
                     .Include(p => p.Ratings)
                     .Include(p => p.GameScores)
                     .ToList();
+
+                players.ForEach(p => SortRatings(p));
+
+                return players;
             }
         }
 
@@ -52,6 +60,11 @@ namespace Elo.DbHandler
             }
 
             return player;
+        }
+
+        private static void SortRatings(Player player)
+        {
+            player.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));
         }
     }
 }
