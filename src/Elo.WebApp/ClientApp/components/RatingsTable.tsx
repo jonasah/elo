@@ -8,6 +8,7 @@ interface PlayerRatingDto {
     gamesPlayed: number;
     wins: number;
     losses: number;
+    pct: number;
 }
 
 interface RatingsTableState {
@@ -23,26 +24,28 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
     }
 
     public render() {
-        return <table className="table">
+        return <table className="table table-condensed table-striped table-hover table-bordered">
             <thead>
                 <tr>
-                    <th>Rank</th>
-                    <th>Player</th>
-                    <th>Rating</th>
-                    <th>Games played</th>
-                    <th>Wins</th>
-                    <th>Losses</th>
+                    <th className="text-center">Rank</th>
+                    <th className="text-center">Player</th>
+                    <th className="text-center">Rating</th>
+                    <th className="text-center">Games</th>
+                    <th className="text-center">Wins</th>
+                    <th className="text-center">Losses</th>
+                    <th className="text-center">Pct</th>
                 </tr>
             </thead>
             <tbody>
                 {this.state.ratings.map(rating =>
                     <tr key={rating.id}>
-                        <td>{rating.rank}</td>
-                        <td>{rating.player}</td>
-                        <td>{rating.rating}</td>
-                        <td>{rating.gamesPlayed}</td>
-                        <td>{rating.wins}</td>
-                        <td>{rating.losses}</td>
+                        <td className="text-center">{rating.rank}</td>
+                        <td className="text-center">{rating.player}</td>
+                        <td className="text-center">{rating.rating}</td>
+                        <td className="text-center">{rating.gamesPlayed}</td>
+                        <td className="text-center">{rating.wins}</td>
+                        <td className="text-center">{rating.losses}</td>
+                        <td className="text-center">{(100*rating.pct).toFixed(1)}</td>
                     </tr>
                 )}
             </tbody>

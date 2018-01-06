@@ -22,8 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\components\GameResultForm.tsx" />
+    <None Remove="ClientApp\components\AddGameForm.tsx" />
+    <None Remove="ClientApp\components\AddGamePage.tsx" />
     <None Remove="ClientApp\components\RatingsTable.tsx" />
+    <None Remove="ClientApp\components\TextInputWithButtonDropdown.tsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,7 +34,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\components\GameResultForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\AddGameForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\TextInputWithButtonDropdown.tsx" />
     <TypeScriptCompile Include="ClientApp\components\RatingsTable.tsx" />
   </ItemGroup>
 

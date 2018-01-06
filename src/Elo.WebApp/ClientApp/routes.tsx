@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { RatingsPage } from './components/RatingsPage';
 

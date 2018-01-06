@@ -20,21 +20,31 @@ namespace Elo.WebApp.Controllers
                 .OrderByDescending(p => p.CurrentRating)
                 .Select(p =>
             {
-                return new Models.Dto.PlayerRating
+                var pr = new Models.Dto.PlayerRating
                 {
                     Id = p.Id,
                     Rank = rank++,
                     Player = p.Name,
                     Rating = p.CurrentRating,
-                    GamesPlayed = p.GameScores.Count,
                     Wins = p.GameScores.Count(gs => gs.Win),
                     Losses = p.GameScores.Count(gs => gs.Loss)
                 };
+
+                pr.GamesPlayed = pr.Wins + pr.Losses;
+                pr.Pct = (double)pr.Wins / pr.GamesPlayed;
+
+                return pr;
             });
         }
 
-        [HttpPost("gameresults")]
-        public void PostGameResult([FromBody]GameResult gameResult)
+        [HttpGet("players")]
+        public IEnumerable<string> GetPlayers()
+        {
+            return PlayerHandler.GetAllPlayerNames();
+        }
+
+        [HttpPost("game")]
+        public void AddGame([FromBody]GameResult gameResult)
         {
             try
             {

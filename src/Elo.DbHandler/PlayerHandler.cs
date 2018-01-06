@@ -51,6 +51,17 @@ namespace Elo.DbHandler
             }
         }
 
+        public static List<string> GetAllPlayerNames()
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.Players
+                    .Select(p => p.Name)
+                    .OrderBy(p => p)
+                    .ToList();
+            }
+        }
+
         public static Player UpdatePlayer(Player player)
         {
             using (var db = new EloDbContext())
