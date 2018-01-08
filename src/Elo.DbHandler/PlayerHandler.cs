@@ -75,7 +75,7 @@ namespace Elo.DbHandler
 
         private static void SortRatings(Player player)
         {
-            player.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));
+            player?.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));
         }
     }
 }
