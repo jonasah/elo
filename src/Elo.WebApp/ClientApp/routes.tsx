@@ -5,5 +5,4 @@ import { RatingsPage } from './components/RatingsPage';
 
 export const routes = <Layout>
     <Route exact path='/' component={RatingsPage} />
-    <Route path='/ratings' component={RatingsPage} />
 </Layout>;
