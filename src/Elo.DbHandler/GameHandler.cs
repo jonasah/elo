@@ -1,4 +1,7 @@
 ﻿using Elo.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Elo.DbHandler
 {
@@ -13,6 +16,22 @@ namespace Elo.DbHandler
             }
 
             return game;
+        }
+
+        public static List<Game> GetGamesByPlayer(string player)
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.GameScores
+                    .Include(gs => gs.Player)
+                    .Include(gs => gs.Game)
+                        .ThenInclude(g => g.Scores)
+                            .ThenInclude(gs => gs.Player)
+                    .ToList()
+                    .Where(gs => gs.Player.Name == player)
+                    .Select(gs => gs.Game)
+                    .ToList();
+            }
         }
     }
 }

@@ -35,6 +35,23 @@ namespace Elo.WebApp.Controllers
             return PlayerHandler.GetAllPlayerNames();
         }
 
+        [HttpGet("playerstats/{player}/h2h")]
+        public IEnumerable<Head2HeadRecord> GetHead2HeadRecords([FromRoute(Name = "player")]string playerName)
+        {
+            var games = GameHandler.GetGamesByPlayer(playerName);
+
+            return games
+                .SelectMany(g => g.Scores.Where(gs => gs.Player.Name != playerName))
+                .GroupBy(gs => gs.Player)
+                .Select(g => new Head2HeadRecord
+                {
+                    Opponent = g.Key.Name,
+                    Wins = g.Count(gs => gs.Loss), // player's wins are losses for opponent
+                    Losses = g.Count(gs => gs.Win) // player's losses are wins for opponent
+                })
+                .OrderBy(h2h => h2h.Opponent);
+        }
+
         [HttpPost("game")]
         public void AddGame([FromBody]GameResult gameResult)
         {
@@ -55,7 +72,7 @@ namespace Elo.WebApp.Controllers
                 losingPlayer.CurrentRating = p2.Rating;
 
                 // update database
-                GameHandler.AddGame(new Game
+                GameHandler.AddGame(new Models.Game
                 {
                     Scores = new List<GameScore>
                     {

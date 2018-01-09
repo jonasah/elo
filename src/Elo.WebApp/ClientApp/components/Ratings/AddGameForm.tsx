@@ -1,5 +1,5 @@
 ﻿import * as React from 'react';
-import { TextInputWithButtonDropdown } from './TextInputWithButtonDropdown';
+import { TextInputWithButtonDropdown } from '../Controls/TextInputWithButtonDropdown';
 
 interface AddGameFormState {
     winner: string;
