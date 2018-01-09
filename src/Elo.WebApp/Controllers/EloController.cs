@@ -18,9 +18,7 @@ namespace Elo.WebApp.Controllers
 
             return PlayerHandler.GetAllPlayers()
                 .OrderByDescending(p => p.CurrentRating)
-                .Select(p =>
-            {
-                var pr = new Models.Dto.PlayerRating
+                .Select(p => new Models.Dto.PlayerRating
                 {
                     Id = p.Id,
                     Rank = rank++,
@@ -28,13 +26,7 @@ namespace Elo.WebApp.Controllers
                     Rating = p.CurrentRating,
                     Wins = p.GameScores.Count(gs => gs.Win),
                     Losses = p.GameScores.Count(gs => gs.Loss)
-                };
-
-                pr.GamesPlayed = pr.Wins + pr.Losses;
-                pr.Pct = (double)pr.Wins / pr.GamesPlayed;
-
-                return pr;
-            });
+                });
         }
 
         [HttpGet("players")]
