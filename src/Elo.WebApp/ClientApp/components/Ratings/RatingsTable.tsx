@@ -22,6 +22,8 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
     constructor() {
         super();
         this.state = { ratings: [] };
+
+        this.fetchRatings();
     }
 
     public render() {
