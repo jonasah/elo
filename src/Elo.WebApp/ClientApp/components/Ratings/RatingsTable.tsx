@@ -68,7 +68,7 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
     }
 
     componentDidMount() {
-        this.timerId = setInterval(() => this.fetchRatings(), 1000);
+        this.timerId = setInterval(() => this.fetchRatings(), 3000);
     }
 
     componentWillUnmount() {
