@@ -17,14 +17,10 @@ export class NavBar extends React.Component<{}, {}> {
                 <div className='navbar-collapse collapse'>
                     <ul className='nav navbar-nav'>
                         <li>
-                            <NavLink to={ '/' } exact activeClassName='active'>
-                                <span className='glyphicon glyphicon-list-alt'></span> Ratings
-                            </NavLink>
+                            <NavLink to={ '/' } exact activeClassName='active'>Ratings</NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/playerstats'} activeClassName='active'>
-                                <span className='glyphicon glyphicon-user'></span> Player Stats
-                            </NavLink>
+                            <NavLink to={'/playerstats'} activeClassName='active'>Player Stats</NavLink>
                         </li>
                     </ul>
                 </div>
