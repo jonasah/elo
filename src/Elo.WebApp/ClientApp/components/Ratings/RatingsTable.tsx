@@ -1,5 +1,6 @@
 ﻿import * as React from 'react'
 import { Link } from 'react-router-dom'
+import { PlayerStatsLink } from '../Common/PlayerStatsLink';
 
 interface PlayerRatingDto {
     id: number;
@@ -44,9 +45,7 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
                     <tr key={rating.id}>
                         <td className="text-center">{rating.rank}</td>
                         <td className="text-center">
-                            <Link to={'/playerstats/' + rating.player}>
-                                {rating.player}
-                            </Link>
+                            <PlayerStatsLink player={rating.player}/>
                         </td>
                         <td className="text-center">{rating.rating}</td>
                         <td className="text-center">{rating.gamesPlayed}</td>
