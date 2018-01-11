@@ -24,6 +24,8 @@
   <ItemGroup>
     <None Remove="ClientApp\components\AddGameForm.tsx" />
     <None Remove="ClientApp\components\AddGamePage.tsx" />
+    <None Remove="ClientApp\components\Common\PlayerStatsLink.tsx" />
+    <None Remove="ClientApp\components\Games\GamesPage.tsx" />
     <None Remove="ClientApp\components\PlayerStatsPage.tsx" />
     <None Remove="ClientApp\components\PlayerStats\Head2HeadRecords.tsx" />
     <None Remove="ClientApp\components\RatingsTable.tsx" />
@@ -36,6 +38,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\components\Common\PlayerStatsLink.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\Games\GamesTable.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\Games\GamesPage.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\Head2HeadRecords.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Ratings\AddGameForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\PlayerStatsPage.tsx" />

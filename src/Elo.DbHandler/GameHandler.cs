@@ -18,6 +18,20 @@ namespace Elo.DbHandler
             return game;
         }
 
+        public static List<Game> GetGames(int page, int pageSize)
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.Games
+                    .Include(g => g.Scores)
+                        .ThenInclude(gs => gs.Player)
+                    .OrderByDescending(g => g.Created)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+            }
+        }
+
         public static List<Game> GetGamesByPlayer(string player)
         {
             using (var db = new EloDbContext())

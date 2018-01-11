@@ -22,6 +22,9 @@ export class NavBar extends React.Component<{}, {}> {
                         <li>
                             <NavLink to={'/playerstats'} activeClassName='active'>Player Stats</NavLink>
                         </li>
+                        <li>
+                            <NavLink to={'/games'} activeClassName='active'>Games</NavLink>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -98,6 +98,19 @@ namespace Elo.WebApp.Controllers
             }
         }
 
+        [HttpGet("games")]
+        public IEnumerable<Models.Dto.Game> GetGames(int page = 1, int pageSize = 20)
+        {
+            return GameHandler.GetGames(page, pageSize)
+                .Select(g => new Models.Dto.Game
+                {
+                    Id = g.Id,
+                    Winner = g.WinningGameScore.Player.Name,
+                    Loser = g.LosingGameScore.Player.Name,
+                    Date = g.Created.ToString("yyyy-MM-dd")
+                });
+        }
+
         private Player GetOrCreatePlayer(string name)
         {
             var player = PlayerHandler.GetPlayerByName(name);
