@@ -44,6 +44,26 @@ namespace Elo.DbHandler
                     .ToList()
                     .Where(gs => gs.Player.Name == player)
                     .Select(gs => gs.Game)
+                    .OrderByDescending(g => g.Created)
+                    .ToList();
+            }
+        }
+
+        public static List<Game> GetGamesByPlayer(string player, int page, int pageSize)
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.GameScores
+                    .Include(gs => gs.Player)
+                    .Include(gs => gs.Game)
+                        .ThenInclude(g => g.Scores)
+                            .ThenInclude(gs => gs.Player)
+                    .ToList()
+                    .Where(gs => gs.Player.Name == player)
+                    .Select(gs => gs.Game)
+                    .OrderByDescending(g => g.Created)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
                     .ToList();
             }
         }

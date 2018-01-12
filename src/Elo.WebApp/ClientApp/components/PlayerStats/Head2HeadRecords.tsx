@@ -29,9 +29,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
 
     public render() {
         return <div>
-            <div className="page-header">
-                <h2>Head 2 Head Records</h2>
-            </div>
+            <h2>Head 2 Head Records</h2>
             <table className="table table-condensed table-striped table-hover table-bordered">
                 <thead>
                     <tr>

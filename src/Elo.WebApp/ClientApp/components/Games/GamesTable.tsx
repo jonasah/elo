@@ -15,6 +15,7 @@ interface GamesTableState {
 }
 
 interface GamesTableProps {
+    player?: string;
     pageSize: number;
 }
 
@@ -41,10 +42,16 @@ export class GamesTable extends React.Component<GamesTableProps, GamesTableState
                     {this.state.games.map(game =>
                         <tr key={game.id}>
                             <td className="text-center">
-                                <PlayerStatsLink player={game.winner}/>
+                                {this.props.player === game.winner && game.winner}
+                                {this.props.player !== game.winner &&
+                                    <PlayerStatsLink player={game.winner} />
+                                }
                             </td>
                             <td className="text-center">
-                                <PlayerStatsLink player={game.loser}/>
+                                {this.props.player === game.loser && game.loser}
+                                {this.props.player !== game.loser &&
+                                    <PlayerStatsLink player={game.loser} />
+                                }
                             </td>
                             <td className="text-center">{game.date}</td>
                         </tr>
@@ -55,7 +62,13 @@ export class GamesTable extends React.Component<GamesTableProps, GamesTableState
     }
 
     fetchGames() {
-        fetch('api/elo/games?page=' + this.state.page + '&pageSize=' + this.props.pageSize)
+        var requestUrl = 'api/elo/games';
+
+        if (this.props.player !== undefined) {
+            requestUrl += '/' + this.props.player;
+        }
+
+        fetch(requestUrl + '?page=' + this.state.page + '&pageSize=' + this.props.pageSize)
             .then(response => response.json() as Promise<GameDto[]>)
             .then(data => this.setState({ games: data }));
     }
