@@ -12,14 +12,17 @@ interface GameDto {
 interface GamesTableState {
     games: GameDto[];
     page: number;
+}
+
+interface GamesTableProps {
     pageSize: number;
 }
 
-export class GamesTable extends React.Component<{}, GamesTableState> {
-    constructor() {
-        super();
+export class GamesTable extends React.Component<GamesTableProps, GamesTableState> {
+    constructor(props: GamesTableProps) {
+        super(props);
 
-        this.state = { games: [], page: 1, pageSize: 25 };
+        this.state = { games: [], page: 1 };
 
         this.fetchGames();
     }
@@ -52,7 +55,7 @@ export class GamesTable extends React.Component<{}, GamesTableState> {
     }
 
     fetchGames() {
-        fetch('api/elo/games?page=' + this.state.page + '&pageSize=' + this.state.pageSize)
+        fetch('api/elo/games?page=' + this.state.page + '&pageSize=' + this.props.pageSize)
             .then(response => response.json() as Promise<GameDto[]>)
             .then(data => this.setState({ games: data }));
     }
