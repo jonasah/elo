@@ -1,6 +1,6 @@
 ﻿import * as React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { GamesTable } from './GamesTable';
+import { LatestGamesTable } from './LatestGamesTable';
 
 export class GamesPage extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
@@ -8,7 +8,7 @@ export class GamesPage extends React.Component<RouteComponentProps<{}>, {}> {
             <div>
                 <h1>Latest Games</h1>
             </div>
-            <GamesTable page={1} pageSize={25}/>
+            <LatestGamesTable numGames={25}/>
         </div>;
     }
 }

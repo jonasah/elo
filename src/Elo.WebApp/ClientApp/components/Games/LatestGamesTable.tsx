@@ -14,12 +14,11 @@ interface GamesTableState {
 }
 
 interface GamesTableProps {
+    numGames: number;
     player?: string;
-    page: number;
-    pageSize: number;
 }
 
-export class GamesTable extends React.Component<GamesTableProps, GamesTableState> {
+export class LatestGamesTable extends React.Component<GamesTableProps, GamesTableState> {
     constructor(props: GamesTableProps) {
         super(props);
 
@@ -68,7 +67,7 @@ export class GamesTable extends React.Component<GamesTableProps, GamesTableState
             requestUrl += '/' + this.props.player;
         }
 
-        fetch(requestUrl + '?page=' + this.props.page + '&pageSize=' + this.props.pageSize)
+        fetch(requestUrl + '?page=1&pageSize=' + this.props.numGames)
             .then(response => response.json() as Promise<GameDto[]>)
             .then(data => this.setState({ games: data }));
     }
