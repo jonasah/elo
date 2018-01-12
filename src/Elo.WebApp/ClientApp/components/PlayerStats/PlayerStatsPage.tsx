@@ -24,7 +24,7 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<PlayerS
             <Head2HeadRecords player={this.player} />
             <hr/>
             <h2>Latest Games</h2>
-            <GamesTable player={this.player} pageSize={10}/>
+            <GamesTable player={this.player} page={1} pageSize={10}/>
         </div>;
     }
 }

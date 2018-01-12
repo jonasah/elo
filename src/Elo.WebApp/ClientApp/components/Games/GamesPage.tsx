@@ -8,7 +8,7 @@ export class GamesPage extends React.Component<RouteComponentProps<{}>, {}> {
             <div>
                 <h1>Latest Games</h1>
             </div>
-            <GamesTable pageSize={25}/>
+            <GamesTable page={1} pageSize={25}/>
         </div>;
     }
 }
