@@ -20,6 +20,8 @@ interface GamesTableProps {
 }
 
 export class LatestGamesTable extends React.Component<GamesTableProps, GamesTableState> {
+    timerId: number;
+
     constructor(props: GamesTableProps) {
         super(props);
 
@@ -75,5 +77,13 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
         fetch(requestUrl + '?page=1&pageSize=' + this.props.numGames)
             .then(response => response.json() as Promise<GameDto[]>)
             .then(data => this.setState({ games: data }));
+    }
+
+    componentDidMount() {
+        this.timerId = setInterval(() => this.fetchGames(), 30*1000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId);
     }
 }
