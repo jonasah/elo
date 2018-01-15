@@ -16,6 +16,7 @@ interface GamesTableState {
 interface GamesTableProps {
     numGames: number;
     player?: string;
+    showDate?: boolean;
 }
 
 export class LatestGamesTable extends React.Component<GamesTableProps, GamesTableState> {
@@ -34,7 +35,9 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                     <tr>
                         <th className="text-center">Winner</th>
                         <th className="text-center">Loser</th>
-                        <th className="text-center">Date</th>
+                        {this.props.showDate !== false &&
+                            <th className="text-center">Date</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
@@ -52,7 +55,9 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                                     <PlayerStatsLink player={game.loser} />
                                 }
                             </td>
-                            <td className="text-center">{game.date}</td>
+                            {this.props.showDate !== false &&
+                                <td className="text-center">{game.date}</td>
+                            }
                         </tr>
                     )}
                 </tbody>
