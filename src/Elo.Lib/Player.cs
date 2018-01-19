@@ -22,6 +22,11 @@ namespace Elo.Lib
             opponent.Rating = opponentNewRating;
         }
 
+        public double ExpectedScore(Player opponent)
+        {
+            return GetExpectedScore(Rating, opponent.Rating);
+        }
+
         public override string ToString()
         {
             return $"{Name}: {Rating}";

@@ -52,6 +52,24 @@ namespace Elo.WebApp.Controllers
                 .OrderBy(h2h => h2h.Opponent);
         }
 
+        [HttpGet("playerstats/{player}/expectedscores")]
+        public IEnumerable<object> GetExpectedScores([FromRoute(Name = "player")]string playerName)
+        {
+            var players = PlayerHandler.GetAllPlayers().ToList();
+            var player = players.Find(p => p.Name == playerName);
+            players.Remove(player);
+
+            var libPlayer = player.ToEloLibPlayer();
+
+            return players
+                .Select(p => new ExpectedScore
+                {
+                    Opponent = p.Name,
+                    Score = libPlayer.ExpectedScore(p.ToEloLibPlayer())
+                })
+                .OrderByDescending(es => es.Score);
+        }
+
         [HttpPost("game")]
         public void AddGame([FromBody]GameResult gameResult)
         {

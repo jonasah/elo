@@ -12,9 +12,14 @@ namespace Elo.Lib
     {
         public static int CalculateNewRating(int oldRating, int opponentRating, Result result)
         {
-            var expected = 1.0 / (1.0 + Math.Pow(10.0, (opponentRating - oldRating) / 400.0));
+            var expected = GetExpectedScore(oldRating, opponentRating);
             var actual = result == Result.Win ? 1.0 : 0.0;
             return (int)(oldRating + Settings.KFactor * (actual - expected));
+        }
+
+        public static double GetExpectedScore(int myRating, int opponentRating)
+        {
+            return 1.0 / (1.0 + Math.Pow(10.0, (opponentRating - myRating) / 400.0));
         }
     }
 }

@@ -28,6 +28,7 @@
     <None Remove="ClientApp\components\Games\GamesPage.tsx" />
     <None Remove="ClientApp\components\Home\HomePage.tsx" />
     <None Remove="ClientApp\components\PlayerStatsPage.tsx" />
+    <None Remove="ClientApp\components\PlayerStats\ExpectedScores.tsx" />
     <None Remove="ClientApp\components\PlayerStats\Head2HeadRecords.tsx" />
     <None Remove="ClientApp\components\RatingsTable.tsx" />
     <None Remove="ClientApp\components\TextInputWithButtonDropdown.tsx" />
@@ -43,6 +44,7 @@
     <TypeScriptCompile Include="ClientApp\components\Games\LatestGamesTable.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Games\GamesPage.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Home\HomePage.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\PlayerStats\ExpectedScores.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\Head2HeadRecords.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Ratings\AddGameForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\PlayerStatsPage.tsx" />
