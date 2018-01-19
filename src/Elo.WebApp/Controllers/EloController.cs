@@ -71,7 +71,7 @@ namespace Elo.WebApp.Controllers
         }
 
         [HttpPost("game")]
-        public void AddGame([FromBody]GameResult gameResult)
+        public bool AddGame([FromBody]GameResult gameResult)
         {
             try
             {
@@ -109,10 +109,12 @@ namespace Elo.WebApp.Controllers
 
                 PlayerHandler.UpdatePlayer(winningPlayer);
                 PlayerHandler.UpdatePlayer(losingPlayer);
+
+                return true;
             }
             catch (Exception /*ex*/)
             {
-                return;
+                return false;
             }
         }
 

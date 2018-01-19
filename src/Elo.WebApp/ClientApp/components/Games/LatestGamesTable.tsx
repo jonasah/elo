@@ -1,16 +1,10 @@
 ﻿import * as React from 'react'
 import { Link } from 'react-router-dom';
 import { PlayerStatsLink } from '../Common/PlayerStatsLink';
-
-interface GameDto {
-    id: number;
-    winner: string;
-    loser: string;
-    date: string;
-}
+import * as Api from '../../api';
 
 interface GamesTableState {
-    games: GameDto[];
+    games: Api.Models.Game[];
 }
 
 interface GamesTableProps {
@@ -68,14 +62,7 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
     }
 
     fetchGames() {
-        var requestUrl = 'api/elo/games';
-
-        if (this.props.player !== undefined) {
-            requestUrl += '/' + this.props.player;
-        }
-
-        fetch(requestUrl + '?page=1&pageSize=' + this.props.numGames)
-            .then(response => response.json() as Promise<GameDto[]>)
+        Api.getLatestGames(this.props.numGames, this.props.player)
             .then(data => this.setState({ games: data }));
     }
 

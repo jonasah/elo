@@ -1,20 +1,13 @@
 ﻿import * as React from 'react';
 import { Link } from 'react-router-dom';
-
-interface Head2HeadRecordDto {
-    opponent: string;
-    gamesPlayed: number;
-    wins: number;
-    losses: number;
-    pct: number;
-}
+import * as Api from '../../api';
 
 interface Head2HeadRecordsProps {
     player: string;
 }
 
 interface Head2HeadRecordsState {
-    records: Head2HeadRecordDto[];
+    records: Api.Models.Head2HeadRecord[];
 }
 
 export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Head2HeadRecordsState> {
@@ -22,8 +15,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
         super(props);
         this.state = { records: [] };
 
-        fetch('api/elo/playerstats/' + this.props.player + '/h2h')
-            .then(response => response.json() as Promise<Head2HeadRecordDto[]>)
+        Api.getHead2HeadRecords(this.props.player)
             .then(data => this.setState({ records: data }));
     }
 

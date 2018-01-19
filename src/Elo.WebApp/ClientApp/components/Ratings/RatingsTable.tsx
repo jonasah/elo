@@ -1,20 +1,10 @@
 ﻿import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { PlayerStatsLink } from '../Common/PlayerStatsLink';
-
-interface PlayerRatingDto {
-    id: number;
-    rank: number;
-    player: string;
-    rating: number;
-    gamesPlayed: number;
-    wins: number;
-    losses: number;
-    pct: number;
-}
+import * as Api from '../../api';
 
 interface RatingsTableState {
-    ratings: PlayerRatingDto[];
+    ratings: Api.Models.Rating[];
 }
 
 export class RatingsTable extends React.Component<{}, RatingsTableState> {
@@ -59,8 +49,7 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
     }
 
     fetchRatings() {
-        fetch('api/elo/ratings')
-            .then(response => response.json() as Promise<PlayerRatingDto[]>)
+        Api.getRatings()
             .then(data => {
                 this.setState({ ratings: data });
             });

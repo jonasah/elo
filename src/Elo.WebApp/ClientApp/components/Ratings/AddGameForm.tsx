@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { TextInputWithButtonDropdown } from '../Controls/TextInputWithButtonDropdown';
+import * as Api from '../../api';
 
 interface AddGameFormState {
     winner: string;
@@ -45,14 +46,11 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
         e.preventDefault();
 
         // POST game result and then clear state
-        fetch('api/elo/game', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(this.state)
+        Api.postGame({
+            winner: this.state.winner,
+            loser: this.state.loser
         })
-            .then(response => this.setState({
+            .then(success => this.setState({
                 winner: '', loser: ''
             }));
     }
@@ -82,8 +80,7 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
     }
 
     fetchPlayers() {
-        fetch('api/elo/players')
-            .then(response => response.json() as Promise<string[]>)
+        Api.getPlayers()
             .then(players => {
                 this.setState({
                     players: players

@@ -1,17 +1,13 @@
 ﻿import * as React from 'react';
 import { PlayerStatsLink } from '../Common/PlayerStatsLink';
-
-interface ExpectedScoresDto {
-    opponent: string;
-    score: number;
-}
+import * as Api from '../../api';
 
 interface ExpectedScoresProps {
     player: string;
 }
 
 interface ExpectedScoresState {
-    scores: ExpectedScoresDto[];
+    scores: Api.Models.ExpectedScore[];
 }
 
 export class ExpectedScores extends React.Component<ExpectedScoresProps, ExpectedScoresState> {
@@ -48,8 +44,6 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
     }
 
     fetchScores() {
-        fetch('api/elo/playerstats/' + this.props.player + '/expectedscores')
-            .then(response => response.json() as Promise<ExpectedScoresDto[]>)
-            .then(data => this.setState({ scores: data }));
+        Api.getExpectedScores(this.props.player).then(data => this.setState({ scores: data }));
     }
 }
