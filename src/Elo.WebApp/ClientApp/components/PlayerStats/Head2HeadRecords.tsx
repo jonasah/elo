@@ -1,5 +1,6 @@
 ﻿import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { PlayerStatsLink } from '../Common/PlayerStatsLink';
 import * as Api from '../../api';
 
 interface Head2HeadRecordsProps {
@@ -36,9 +37,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                     {this.state.records.map(h2h =>
                         <tr key={h2h.opponent}>
                             <td className="text-center">
-                                <Link to={'/playerstats/' + h2h.opponent}>
-                                    {h2h.opponent}
-                                </Link>
+                                <PlayerStatsLink player={h2h.opponent}/>
                             </td>
                             <td className="text-center">{h2h.gamesPlayed}</td>
                             <td className="text-center">{h2h.wins}</td>
