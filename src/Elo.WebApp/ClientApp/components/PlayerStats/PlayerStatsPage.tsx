@@ -20,7 +20,7 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<PlayerS
     public render() {
         return <div>
             <div className="page-header">
-                <h1>Player Stats - {this.player}</h1>
+                <h1>{this.player} <small>Player Stats</small></h1>
             </div>
             <div className="row">
                 <div className="col-sm-6">
