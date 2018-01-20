@@ -13,8 +13,6 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<{}>, Pl
         super(props);
 
         this.state = { players: [] };
-
-        Api.getPlayers().then(data => this.setState({ players: data }));
     }
 
     public render() {
@@ -34,5 +32,9 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<{}>, Pl
 
             <Route path={`${this.props.match.url}/:player`} component={PlayerStats} />
         </div>;
+    }
+
+    componentWillMount() {
+        Api.getPlayers().then(data => this.setState({ players: data }));
     }
 }

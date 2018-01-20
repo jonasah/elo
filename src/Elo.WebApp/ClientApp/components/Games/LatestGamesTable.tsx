@@ -20,8 +20,6 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
         super(props);
 
         this.state = { games: [] };
-
-        this.fetchGames();
     }
 
     public render() {
@@ -61,13 +59,24 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
         </div>;
     }
 
-    fetchGames() {
-        Api.getLatestGames(this.props.numGames, this.props.player)
+    fetchGames(props: GamesTableProps) {
+        Api.getLatestGames(props.numGames, props.player)
             .then(data => this.setState({ games: data }));
     }
 
+    componentWillMount() {
+        this.fetchGames(this.props);
+    }
+
     componentDidMount() {
-        this.timerId = setInterval(() => this.fetchGames(), 30*1000);
+        this.timerId = setInterval(() => this.fetchGames(this.props), 30*1000);
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<GamesTableProps>) {
+        if (this.props.player != nextProps.player) {
+            this.setState({ games: [] });
+            this.fetchGames(nextProps);
+        }
     }
 
     componentWillUnmount() {

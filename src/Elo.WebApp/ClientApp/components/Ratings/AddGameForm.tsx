@@ -88,6 +88,10 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
             })
     }
 
+    componentWillMount() {
+        this.fetchPlayers();
+    }
+
     componentDidMount() {
         this.timerId = setInterval(() => this.fetchPlayers(), 2000);
     }

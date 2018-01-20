@@ -15,8 +15,6 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
         super(props);
 
         this.state = { scores: [] };
-
-        this.fetchScores();
     }
 
     public render() {
@@ -43,7 +41,18 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
         </div>;
     }
 
-    fetchScores() {
-        Api.getExpectedScores(this.props.player).then(data => this.setState({ scores: data }));
+    fetchScores(props: ExpectedScoresProps) {
+        Api.getExpectedScores(props.player).then(data => this.setState({ scores: data }));
+    }
+
+    componentWillMount() {
+        this.fetchScores(this.props);
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<ExpectedScoresProps>) {
+        if (this.props.player != nextProps.player) {
+            this.setState({ scores: [] });
+            this.fetchScores(nextProps);
+        }
     }
 }

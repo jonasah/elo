@@ -15,9 +15,6 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
     constructor(props: Head2HeadRecordsProps) {
         super(props);
         this.state = { records: [] };
-
-        Api.getHead2HeadRecords(this.props.player)
-            .then(data => this.setState({ records: data }));
     }
 
     public render() {
@@ -48,5 +45,21 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                 </tbody>
             </table>
         </div>;
+    }
+
+    fetchRecords(props: Head2HeadRecordsProps) {
+        Api.getHead2HeadRecords(props.player)
+            .then(data => this.setState({ records: data }));
+    }
+
+    componentWillMount() {
+        this.fetchRecords(this.props);
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<Head2HeadRecordsProps>) {
+        if (this.props.player != nextProps.player) {
+            this.setState({ records: [] });
+            this.fetchRecords(nextProps);
+        }
     }
 }

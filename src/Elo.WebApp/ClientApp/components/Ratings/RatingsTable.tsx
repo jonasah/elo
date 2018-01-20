@@ -13,8 +13,6 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
     constructor() {
         super();
         this.state = { ratings: [] };
-
-        this.fetchRatings();
     }
 
     public render() {
@@ -53,6 +51,10 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
             .then(data => {
                 this.setState({ ratings: data });
             });
+    }
+
+    componentWillMount() {
+        this.fetchRatings();
     }
 
     componentDidMount() {
