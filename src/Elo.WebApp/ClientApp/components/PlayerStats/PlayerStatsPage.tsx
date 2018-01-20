@@ -15,12 +15,9 @@ interface PlayerStatsPageState {
 }
 
 export class PlayerStatsPage extends React.Component<RouteComponentProps<PlayerStatsPageProps>, PlayerStatsPageState> {
-    player?: string;
-
     constructor(props: RouteComponentProps<PlayerStatsPageProps>) {
         super(props);
 
-        this.player = this.props.match.params.player;
         this.state = { players: [] };
 
         Api.getPlayers().then(data => this.setState({ players: data }));
@@ -40,19 +37,19 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<PlayerS
                     )}
                 </ul>
             </div>
-            {this.player !== undefined &&
+            {this.props.match.params.player !== undefined &&
                 <div>
                     <div className="page-header">
-                        <h1>{this.player} <small>Player Stats</small></h1>
+                        <h1>{this.props.match.params.player} <small>Player Stats</small></h1>
                     </div>
                     <div className="row">
                         <div className="col-sm-6">
-                            <Head2HeadRecords player={this.player} />
+                            <Head2HeadRecords player={this.props.match.params.player} />
                             <hr />
-                            <LatestGames player={this.player} numGames={10} headerSize={2} />
+                            <LatestGames player={this.props.match.params.player} numGames={10} headerSize={2} />
                         </div>
                         <div className="col-sm-6">
-                            <ExpectedScores player={this.player} />
+                            <ExpectedScores player={this.props.match.params.player} />
                         </div>
                     </div>
                 </div>
