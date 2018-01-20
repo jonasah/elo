@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { AddGameForm } from '../Ratings/AddGameForm';
-import { RatingsTable } from '../Ratings/RatingsTable';
+import { Ratings } from '../Ratings/Ratings';
 import { LatestGamesTable } from '../Games/LatestGamesTable';
 
 export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
@@ -16,8 +16,7 @@ export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
             </div>
             <div className="row">
                 <div className="col-sm-8 col-md-9">
-                    <h2>Ratings</h2>
-                    <RatingsTable />
+                    <Ratings headerSize={2} />
                 </div>
                 <div className="col-sm-4 col-md-3">
                     <h2 className="text-center">Latest Games</h2>
