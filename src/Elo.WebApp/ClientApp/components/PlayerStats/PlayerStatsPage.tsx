@@ -1,7 +1,7 @@
 ﻿import * as React from 'react'
 import { RouteComponentProps, withRouter } from 'react-router';
 import { Head2HeadRecords } from './Head2HeadRecords';
-import { LatestGamesTable } from '../Games/LatestGamesTable';
+import { LatestGames } from '../Games/LatestGames';
 import { ExpectedScores } from './ExpectedScores';
 
 interface PlayerStatsPageProps {
@@ -26,8 +26,7 @@ export class PlayerStatsPage extends React.Component<RouteComponentProps<PlayerS
                 <div className="col-sm-6">
                     <Head2HeadRecords player={this.player} />
                     <hr />
-                    <h2>Latest Games</h2>
-                    <LatestGamesTable player={this.player} numGames={10} />
+                    <LatestGames player={this.player} numGames={10} headerSize={2} />
                 </div>
                 <div className="col-sm-6">
                     <ExpectedScores player={this.player} />

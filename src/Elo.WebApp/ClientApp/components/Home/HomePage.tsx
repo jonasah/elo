@@ -2,7 +2,7 @@
 import { RouteComponentProps } from 'react-router-dom';
 import { AddGameForm } from '../Ratings/AddGameForm';
 import { Ratings } from '../Ratings/Ratings';
-import { LatestGamesTable } from '../Games/LatestGamesTable';
+import { LatestGames } from '../Games/LatestGames';
 
 export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
     public render() {
@@ -19,8 +19,7 @@ export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
                     <Ratings headerSize={2} />
                 </div>
                 <div className="col-sm-4 col-md-3">
-                    <h2 className="text-center">Latest Games</h2>
-                    <LatestGamesTable numGames={10} showDate={false} />
+                    <LatestGames numGames={10} showDate={false} headerSize={2} />
                 </div>
             </div>
         </div>;
