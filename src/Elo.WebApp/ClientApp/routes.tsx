@@ -9,6 +9,6 @@ import { GamesPage } from './components/Games/GamesPage';
 export const routes = <Layout>
     <Route path='/' exact component={HomePage} />
     <Route path='/ratings' component={RatingsPage} />
-    <Route path='/playerstats/:player?' component={PlayerStatsPage} />
+    <Route path='/playerstats' component={PlayerStatsPage} />
     <Route path='/games' component={GamesPage} />
 </Layout>;
