@@ -53,7 +53,7 @@ namespace Elo.WebApp.Controllers
         }
 
         [HttpGet("playerstats/{player}/expectedscores")]
-        public IEnumerable<object> GetExpectedScores([FromRoute(Name = "player")]string playerName)
+        public IEnumerable<ExpectedScore> GetExpectedScores([FromRoute(Name = "player")]string playerName)
         {
             var players = PlayerHandler.GetAllPlayers().ToList();
             var player = players.Find(p => p.Name == playerName);
