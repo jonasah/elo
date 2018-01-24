@@ -55,28 +55,20 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
             }));
     }
 
-    onWinnerChange(e: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            winner: e.currentTarget.value
-        });
+    onWinnerChange(winner: string) {
+        this.setState({ winner: winner });
     }
 
-    onWinnerSelected(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.setState({
-            winner: e.currentTarget.innerText
-        });
+    onWinnerSelected(winner: string) {
+        this.setState({ winner: winner });
     }
 
-    onLoserChange(e: React.ChangeEvent<HTMLInputElement>) {
-        this.setState({
-            loser: e.currentTarget.value
-        });
+    onLoserChange(loser: string) {
+        this.setState({ loser: loser });
     }
 
-    onLoserSelected(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.setState({
-            loser: e.currentTarget.innerText
-        });
+    onLoserSelected(loser: string) {
+        this.setState({ loser: loser });
     }
 
     fetchPlayers() {

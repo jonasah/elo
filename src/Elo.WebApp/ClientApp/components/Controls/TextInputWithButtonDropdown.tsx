@@ -4,8 +4,8 @@ interface TextInputWithDropdownProps {
     name: string;
     value: string;
     items: string[];
-    onValueChange: any;
-    onItemSelected: any;
+    onValueChange: (value: string) => void;
+    onItemSelected: (item: string) => void;
 }
 
 export class TextInputWithButtonDropdown extends React.Component<TextInputWithDropdownProps, {}> {
@@ -35,10 +35,10 @@ export class TextInputWithButtonDropdown extends React.Component<TextInputWithDr
     }
 
     onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-        this.props.onValueChange(e);
+        this.props.onValueChange(e.currentTarget.value);
     }
 
     onItemClick(e: React.MouseEvent<HTMLAnchorElement>) {
-        this.props.onItemSelected(e);
+        this.props.onItemSelected(e.currentTarget.innerText);
     }
 }
