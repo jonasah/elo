@@ -53,7 +53,7 @@
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\ExpectedScores.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\Head2HeadRecords.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\PlayerStats.tsx" />
-    <TypeScriptCompile Include="ClientApp\components\Ratings\AddGameForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\Games\AddGameForm.tsx" />
     <TypeScriptCompile Include="ClientApp\components\PlayerStats\PlayerStatsPage.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Controls\TextInputWithButtonDropdown.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Ratings\Ratings.tsx" />

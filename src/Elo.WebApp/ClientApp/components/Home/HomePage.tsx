@@ -1,6 +1,6 @@
 ﻿import * as React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { AddGameForm } from '../Ratings/AddGameForm';
+import { AddGameForm } from '../Games/AddGameForm';
 import { Ratings } from '../Ratings/Ratings';
 import { LatestGames } from '../Games/LatestGames';
 
