@@ -5,7 +5,7 @@ import * as Api from '../../api';
 interface AddGameFormState {
     winner: string;
     loser: string;
-
+    submitDisabled: boolean;
     players: string[];
 }
 
@@ -14,7 +14,7 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
 
     constructor() {
         super();
-        this.state = { winner: '', loser: '', players: [] };
+        this.state = { winner: '', loser: '', submitDisabled: false, players: [] };
         this.onSubmit = this.onSubmit.bind(this);
         this.onWinnerChange = this.onWinnerChange.bind(this);
         this.onWinnerSelected = this.onWinnerSelected.bind(this);
@@ -38,12 +38,14 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
                 onValueChange={this.onLoserChange}
                 onItemSelected={this.onLoserSelected}
             />
-            <button type="submit" className="btn btn-default">Submit</button>
+            <button type="submit" className="btn btn-default" disabled={this.state.submitDisabled}>Submit</button>
         </form>;
     }
 
     onSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        this.setState({ submitDisabled: true });
 
         // POST game result and then clear state
         Api.postGame({
@@ -51,7 +53,7 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
             loser: this.state.loser
         })
             .then(success => this.setState({
-                winner: '', loser: ''
+                winner: '', loser: '', submitDisabled: false
             }));
     }
 
