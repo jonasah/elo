@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Elo.DbHandler;
 using Elo.Models;
 using Elo.Models.Dto;
@@ -75,40 +76,7 @@ namespace Elo.WebApp.Controllers
         {
             try
             {
-                ValidateGameResult(gameResult);
-
-                // fetch players from database
-                var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
-                var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
-
-                // convert to Elo.Lib.Players and calculate new ratings
-                var p1 = winningPlayer.ToEloLibPlayer();
-                var p2 = losingPlayer.ToEloLibPlayer();
-                p1.WinsAgainst(p2);
-
-                winningPlayer.CurrentRating = p1.Rating;
-                losingPlayer.CurrentRating = p2.Rating;
-
-                // update database
-                GameHandler.AddGame(new Models.Game
-                {
-                    Scores = new List<GameScore>
-                    {
-                        new GameScore
-                        {
-                            PlayerId = winningPlayer.Id,
-                            Score = 1.0
-                        },
-                        new GameScore
-                        {
-                            PlayerId = losingPlayer.Id,
-                            Score = 0.0
-                        }
-                    }
-                });
-
-                PlayerHandler.UpdatePlayer(winningPlayer);
-                PlayerHandler.UpdatePlayer(losingPlayer);
+                AddGameImpl(gameResult);
 
                 return true;
             }
@@ -144,6 +112,47 @@ namespace Elo.WebApp.Controllers
                 });
         }
 
+        [HttpDelete("game/{id}")]
+        public bool DeleteGame(int id)
+        {
+            try
+            {
+                // get the game
+                var game = GameHandler.GetGame(id);
+
+                if (game == null)
+                {
+                    throw new ArgumentException("No such game");
+                }
+
+                // delete the game (and its scores)
+                GameHandler.DeleteGame(game);
+
+                // delete all ratings from this game and later
+                RatingHandler.DeleteRatingsAfter(game.Created);
+
+                // get all games after the deleted game
+                var games = GameHandler.GetGamesAfter(game.Created);
+
+                // recalculate ratings
+                foreach (var g in games)
+                {
+                    AddGameImpl(new GameResult
+                    {
+                        Winner = g.WinningGameScore.Player.Name,
+                        Loser = g.LosingGameScore.Player.Name
+                    },
+                    createGame: false);
+                }
+
+                return true;
+            }
+            catch (Exception /*ex*/)
+            {
+                return false;
+            }
+        }
+
         private Player GetOrCreatePlayer(string name)
         {
             var player = PlayerHandler.GetPlayerByName(name);
@@ -175,6 +184,47 @@ namespace Elo.WebApp.Controllers
             {
                 throw new ArgumentException("Winner and loser cannot be the same player");
             }
+        }
+
+        private void AddGameImpl(GameResult gameResult, bool createGame = true)
+        {
+            ValidateGameResult(gameResult);
+
+            // fetch players from database
+            var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
+            var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
+
+            // convert to Elo.Lib.Players and calculate new ratings
+            var p1 = winningPlayer.ToEloLibPlayer();
+            var p2 = losingPlayer.ToEloLibPlayer();
+            p1.WinsAgainst(p2);
+
+            winningPlayer.CurrentRating = p1.Rating;
+            losingPlayer.CurrentRating = p2.Rating;
+
+            // update database
+            if (createGame)
+            {
+                GameHandler.AddGame(new Models.Game
+                {
+                    Scores = new List<GameScore>
+                    {
+                        new GameScore
+                        {
+                            PlayerId = winningPlayer.Id,
+                            Score = 1.0
+                        },
+                        new GameScore
+                        {
+                            PlayerId = losingPlayer.Id,
+                            Score = 0.0
+                        }
+                    }
+                });
+            }
+
+            PlayerHandler.UpdatePlayer(winningPlayer);
+            PlayerHandler.UpdatePlayer(losingPlayer);
         }
     }
 

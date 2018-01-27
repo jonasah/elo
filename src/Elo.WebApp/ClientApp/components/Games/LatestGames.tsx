@@ -5,6 +5,7 @@ interface LatestGamesProps {
     numGames: number;
     player?: string;
     showDate?: boolean;
+    showActions?: boolean;
     headerSize?: number;
 }
 
@@ -16,6 +17,7 @@ export class LatestGames extends React.Component<LatestGamesProps, {}> {
                 numGames={this.props.numGames}
                 player={this.props.player}
                 showDate={this.props.showDate}
+                showActions={this.props.showActions}
             />
         </div>;
     }

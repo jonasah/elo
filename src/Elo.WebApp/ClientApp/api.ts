@@ -72,6 +72,11 @@ export function postGame(gameResult: Models.GameResult): Promise<boolean> {
     return post('game', JSON.stringify(gameResult));
 }
 
+/* DELETE methods */
+export function deleteGame(id: number): Promise<boolean> {
+    return _delete(`game/${id}`);
+}
+
 /* Request methods */
 
 function get<T>(relativeUrl: string): Promise<T> {
@@ -85,6 +90,12 @@ function post<T>(relativeUrl: string, body?: any): Promise<T> {
             'Content-Type': 'application/json'
         },
         body: body
+    });
+}
+
+function _delete<T>(relativeUrl: string): Promise<T> {
+    return request(relativeUrl, {
+        method: 'DELETE'
     });
 }
 

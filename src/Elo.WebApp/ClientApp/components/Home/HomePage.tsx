@@ -19,7 +19,12 @@ export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
                     <Ratings headerSize={2} />
                 </div>
                 <div className="col-sm-4 col-md-3">
-                    <LatestGames numGames={10} showDate={false} headerSize={2} />
+                    <LatestGames
+                        numGames={10}
+                        showDate={false}
+                        showActions={false}
+                        headerSize={2}
+                    />
                 </div>
             </div>
         </div>;

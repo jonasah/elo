@@ -5,12 +5,14 @@ import * as Api from '../../api';
 
 interface GamesTableState {
     games: Api.Models.Game[];
+    deleteDisabled: boolean;
 }
 
 interface GamesTableProps {
     numGames: number;
     player?: string;
     showDate?: boolean;
+    showActions?: boolean;
 }
 
 export class LatestGamesTable extends React.Component<GamesTableProps, GamesTableState> {
@@ -19,7 +21,7 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
     constructor(props: GamesTableProps) {
         super(props);
 
-        this.state = { games: [] };
+        this.state = { games: [], deleteDisabled: false };
     }
 
     public render() {
@@ -31,6 +33,9 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                         <th className="text-center">Loser</th>
                         {this.props.showDate !== false &&
                             <th className="text-center">Date</th>
+                        }
+                        {this.props.showActions !== false &&
+                            <th className="text-center">Actions</th>
                         }
                     </tr>
                 </thead>
@@ -52,6 +57,11 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                             {this.props.showDate !== false &&
                                 <td className="text-center">{game.date}</td>
                             }
+                            {this.props.showActions !== false &&
+                                <td className="text-center">
+                                <button className="btn btn-default btn-xs" type="button" onClick={() => this.deleteGame(game.id)} disabled={this.state.deleteDisabled}>Delete</button>
+                                </td>
+                            }
                         </tr>
                     )}
                 </tbody>
@@ -62,6 +72,16 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
     fetchGames(props: GamesTableProps) {
         Api.getLatestGames(props.numGames, props.player)
             .then(data => this.setState({ games: data }));
+    }
+
+    deleteGame(id: number) {
+        this.setState({ deleteDisabled: true });
+
+        Api.deleteGame(id)
+            .then(data => {
+                this.setState({ deleteDisabled: false });
+                this.fetchGames(this.props);
+            });
     }
 
     componentWillMount() {
