@@ -72,11 +72,11 @@ namespace Elo.WebApp.Controllers
         }
 
         [HttpPost("game")]
-        public bool AddGame([FromBody]GameResult gameResult)
+        public bool PostGame([FromBody]GameResult gameResult)
         {
             try
             {
-                AddGameImpl(gameResult);
+                CalculateNewRatings(gameResult, addGame: true);
 
                 return true;
             }
@@ -137,12 +137,12 @@ namespace Elo.WebApp.Controllers
                 // recalculate ratings
                 foreach (var g in games)
                 {
-                    AddGameImpl(new GameResult
+                    CalculateNewRatings(new GameResult
                     {
                         Winner = g.WinningGameScore.Player.Name,
                         Loser = g.LosingGameScore.Player.Name
                     },
-                    createGame: false);
+                    addGame: false);
                 }
 
                 return true;
@@ -186,7 +186,7 @@ namespace Elo.WebApp.Controllers
             }
         }
 
-        private void AddGameImpl(GameResult gameResult, bool createGame = true)
+        private void CalculateNewRatings(GameResult gameResult, bool addGame)
         {
             ValidateGameResult(gameResult);
 
@@ -203,7 +203,7 @@ namespace Elo.WebApp.Controllers
             losingPlayer.CurrentRating = p2.Rating;
 
             // update database
-            if (createGame)
+            if (addGame)
             {
                 GameHandler.AddGame(new Models.Game
                 {
