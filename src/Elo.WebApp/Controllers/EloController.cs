@@ -175,7 +175,7 @@ namespace Elo.WebApp.Controllers
                 throw new ArgumentNullException();
             }
 
-            if (gameResult.Winner.IsNullOrEmpty() || gameResult.Loser.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(gameResult.Winner) || string.IsNullOrEmpty(gameResult.Loser))
             {
                 throw new ArgumentException("Winner and/or loser is not set");
             }
@@ -226,10 +226,5 @@ namespace Elo.WebApp.Controllers
             PlayerHandler.UpdatePlayer(winningPlayer);
             PlayerHandler.UpdatePlayer(losingPlayer);
         }
-    }
-
-    internal static class Extensions
-    {
-        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
     }
 }
