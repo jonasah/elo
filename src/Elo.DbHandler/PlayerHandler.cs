@@ -31,6 +31,7 @@ namespace Elo.DbHandler
                     .FirstOrDefault(p => p.Name == name);
 
                 SortRatings(player);
+                SortGameScores(player);
 
                 return player;
             }
@@ -46,6 +47,7 @@ namespace Elo.DbHandler
                     .ToList();
 
                 players.ForEach(p => SortRatings(p));
+                players.ForEach(p => SortGameScores(p));
 
                 return players;
             }
@@ -76,6 +78,11 @@ namespace Elo.DbHandler
         private static void SortRatings(Player player)
         {
             player?.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));
+        }
+
+        private static void SortGameScores(Player player)
+        {
+            player?.GameScores.Sort((gs1, gs2) => gs1.Created.CompareTo(gs2.Created));
         }
     }
 }

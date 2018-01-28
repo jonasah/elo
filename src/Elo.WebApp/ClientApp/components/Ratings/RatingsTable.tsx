@@ -26,6 +26,7 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
                     <th className="text-center">Wins</th>
                     <th className="text-center">Losses</th>
                     <th className="text-center">Pct</th>
+                    <th className="text-center"><abbr title="Current streak">Stk</abbr></th>
                 </tr>
             </thead>
             <tbody>
@@ -39,7 +40,8 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
                         <td className="text-center">{rating.gamesPlayed}</td>
                         <td className="text-center">{rating.wins}</td>
                         <td className="text-center">{rating.losses}</td>
-                        <td className="text-center">{(100*rating.pct).toFixed(1)}</td>
+                        <td className="text-center">{(100 * rating.pct).toFixed(1)}</td>
+                        <td className="text-center">{this.getStreakString(rating.streak)}</td>
                     </tr>
                 )}
             </tbody>
@@ -51,6 +53,11 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
             .then(data => {
                 this.setState({ ratings: data });
             });
+    }
+
+    getStreakString(streak: number) {
+        // positive: winning streak, negative: losing streak
+        return (streak > 0 ? `W${streak}` : `L${-streak}`);
     }
 
     componentWillMount() {

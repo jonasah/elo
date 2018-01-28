@@ -26,7 +26,8 @@ namespace Elo.WebApp.Controllers
                     Player = p.Name,
                     Rating = p.CurrentRating,
                     Wins = p.GameScores.Count(gs => gs.Win),
-                    Losses = p.GameScores.Count(gs => gs.Loss)
+                    Losses = p.GameScores.Count(gs => gs.Loss),
+                    Streak = p.GetCurrentStreak()
                 });
         }
 
@@ -225,6 +226,23 @@ namespace Elo.WebApp.Controllers
 
             PlayerHandler.UpdatePlayer(winningPlayer);
             PlayerHandler.UpdatePlayer(losingPlayer);
+        }
+    }
+
+    internal static class Extensions
+    {
+        public static int GetCurrentStreak(this Player player)
+        {
+            var lastGameScore = player.GameScores.Last();
+            var streak = 0;
+            var i = player.GameScores.Count;
+
+            while (--i >= 0 && player.GameScores[i].Score == lastGameScore.Score)
+            {
+                ++streak;
+            }
+
+            return lastGameScore.Win ? streak : -streak;
         }
     }
 }

@@ -8,6 +8,7 @@
         wins: number;
         losses: number;
         pct: number;
+        streak: number;
     }
 
     export interface ExpectedScore {
