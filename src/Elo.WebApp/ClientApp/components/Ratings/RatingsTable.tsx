@@ -23,10 +23,10 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
                     <th className="text-center">Player</th>
                     <th className="text-center">Rating</th>
                     <th className="text-center">Games</th>
-                    <th className="text-center">Wins</th>
-                    <th className="text-center">Losses</th>
+                    <th className="text-center">Win</th>
+                    <th className="text-center">Loss</th>
                     <th className="text-center">Pct</th>
-                    <th className="text-center"><abbr title="Current win/loss streak">Stk</abbr></th>
+                    <th className="text-center"><abbr title="Current win/loss streak">Streak</abbr></th>
                 </tr>
             </thead>
             <tbody>
