@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom'
 import { PlayerStatsLink } from '../Common/PlayerStatsLink';
 import * as Api from '../../api';
 
+interface RatingsTableProps {
+    onRatingsUpdate?: () => void;
+}
+
 interface RatingsTableState {
     ratings: Api.Models.Rating[];
 }
 
-export class RatingsTable extends React.Component<{}, RatingsTableState> {
+export class RatingsTable extends React.Component<RatingsTableProps, RatingsTableState> {
     timerId: number;
 
     constructor() {
@@ -52,6 +56,10 @@ export class RatingsTable extends React.Component<{}, RatingsTableState> {
         Api.getRatings()
             .then(data => {
                 this.setState({ ratings: data });
+
+                if (this.props.onRatingsUpdate !== undefined) {
+                    this.props.onRatingsUpdate();
+                }
             });
     }
 

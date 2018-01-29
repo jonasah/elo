@@ -25,6 +25,7 @@
     <None Remove="ClientApp\api.ts" />
     <None Remove="ClientApp\components\AddGameForm.tsx" />
     <None Remove="ClientApp\components\AddGamePage.tsx" />
+    <None Remove="ClientApp\components\Common\LastUpdateText.tsx" />
     <None Remove="ClientApp\components\Common\PlayerStatsLink.tsx" />
     <None Remove="ClientApp\components\Games\GamesPage.tsx" />
     <None Remove="ClientApp\components\Games\LatestGames.tsx" />
@@ -45,6 +46,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\api.ts" />
+    <TypeScriptCompile Include="ClientApp\components\Common\LastUpdateText.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Common\PlayerStatsLink.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Games\LatestGames.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Games\LatestGamesTable.tsx" />

@@ -13,6 +13,7 @@ interface GamesTableProps {
     player?: string;
     showDate?: boolean;
     showActions?: boolean;
+    onGamesUpdate?: () => void;
 }
 
 export class LatestGamesTable extends React.Component<GamesTableProps, GamesTableState> {
@@ -71,7 +72,13 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
 
     fetchGames(props: GamesTableProps) {
         Api.getLatestGames(props.numGames, props.player)
-            .then(data => this.setState({ games: data }));
+            .then(data => {
+                this.setState({ games: data })
+
+                if (this.props.onGamesUpdate !== undefined) {
+                    this.props.onGamesUpdate();
+                }
+            });
     }
 
     deleteGame(id: number) {
