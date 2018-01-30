@@ -21,14 +21,23 @@ namespace Elo.DbHandler
             return player;
         }
 
-        public static Player GetPlayerByName(string name)
+        public static Player GetPlayerByName(string name, bool includeRatings = true, bool includeGameScores = true)
         {
             using (var db = new EloDbContext())
             {
-                var player = db.Players
-                    .Include(p => p.Ratings)
-                    .Include(p => p.GameScores)
-                    .FirstOrDefault(p => p.Name == name);
+                var query = db.Players.AsQueryable();
+
+                if (includeRatings)
+                {
+                    query = query.Include(p => p.Ratings);
+                }
+
+                if (includeGameScores)
+                {
+                    query = query.Include(p => p.GameScores);
+                }
+
+                var player = query.FirstOrDefault(p => p.Name == name);
 
                 SortRatings(player);
                 SortGameScores(player);
@@ -37,14 +46,23 @@ namespace Elo.DbHandler
             }
         }
 
-        public static List<Player> GetAllPlayers()
+        public static List<Player> GetAllPlayers(bool includeRatings = true, bool includeGameScores = true)
         {
             using (var db = new EloDbContext())
             {
-                var players = db.Players
-                    .Include(p => p.Ratings)
-                    .Include(p => p.GameScores)
-                    .ToList();
+                var query = db.Players.AsQueryable();
+
+                if (includeRatings)
+                {
+                    query = query.Include(p => p.Ratings);
+                }
+
+                if (includeGameScores)
+                {
+                    query = query.Include(p => p.GameScores);
+                }
+
+                var players = query.ToList();
 
                 players.ForEach(p => SortRatings(p));
                 players.ForEach(p => SortGameScores(p));

@@ -57,7 +57,7 @@ namespace Elo.WebApp.Controllers
         [HttpGet("playerstats/{player}/expectedscores")]
         public IEnumerable<ExpectedScore> GetExpectedScores([FromRoute(Name = "player")]string playerName)
         {
-            var players = PlayerHandler.GetAllPlayers().ToList();
+            var players = PlayerHandler.GetAllPlayers(includeGameScores: false).ToList();
             var player = players.Find(p => p.Name == playerName);
             players.Remove(player);
 
@@ -156,7 +156,7 @@ namespace Elo.WebApp.Controllers
 
         private Player GetOrCreatePlayer(string name)
         {
-            var player = PlayerHandler.GetPlayerByName(name);
+            var player = PlayerHandler.GetPlayerByName(name, includeGameScores: false);
 
             if (player == null)
             {
