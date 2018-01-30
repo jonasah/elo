@@ -22,6 +22,7 @@ namespace Elo.Models
             get => Ratings.LastOrDefault().Rating;
             set => Ratings.Add(new PlayerRating
             {
+                PlayerId = Id,
                 Rating = value
             });
         }

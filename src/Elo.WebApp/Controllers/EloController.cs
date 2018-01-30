@@ -224,8 +224,8 @@ namespace Elo.WebApp.Controllers
                 });
             }
 
-            PlayerHandler.UpdatePlayer(winningPlayer);
-            PlayerHandler.UpdatePlayer(losingPlayer);
+            RatingHandler.AddRating(winningPlayer.Ratings.Last());
+            RatingHandler.AddRating(losingPlayer.Ratings.Last());
         }
     }
 
