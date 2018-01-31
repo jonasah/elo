@@ -10,15 +10,15 @@ namespace Elo.Lib
 
     public static class Rating
     {
-        public static int CalculateNewRating(int oldRating, int opponentRating, Result result)
+        public static double CalculateNewRating(double oldRating, double opponentRating, Result result)
         {
             var expected = GetExpectedScore(oldRating, opponentRating);
             var actual = result == Result.Win ? 1.0 : 0.0;
             var newRating = oldRating + Settings.KFactor * (actual - expected);
-            return (int)(newRating + 0.5); // round to nearest integer
+            return newRating; // round to nearest integer
         }
 
-        public static double GetExpectedScore(int myRating, int opponentRating)
+        public static double GetExpectedScore(double myRating, double opponentRating)
         {
             return 1.0 / (1.0 + Math.Pow(10.0, (opponentRating - myRating) / 400.0));
         }

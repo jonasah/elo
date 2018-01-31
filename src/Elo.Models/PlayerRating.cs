@@ -11,6 +11,6 @@ namespace Elo.Models
         public virtual Player Player { get; set; }
 
         [Required]
-        public int Rating { get; set; } = Lib.Settings.DefaultRating;
+        public double Rating { get; set; } = Lib.Settings.DefaultRating;
     }
 }

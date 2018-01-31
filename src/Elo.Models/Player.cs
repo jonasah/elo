@@ -17,7 +17,7 @@ namespace Elo.Models
         public virtual List<PlayerRating> Ratings { get; set; } = new List<PlayerRating>();
 
         [NotMapped]
-        public int CurrentRating
+        public double CurrentRating
         {
             get => Ratings.LastOrDefault().Rating;
             set => Ratings.Add(new PlayerRating

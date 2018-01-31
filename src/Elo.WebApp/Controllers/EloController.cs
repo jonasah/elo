@@ -24,7 +24,7 @@ namespace Elo.WebApp.Controllers
                     Id = p.Id,
                     Rank = rank++,
                     Player = p.Name,
-                    Rating = p.CurrentRating,
+                    Rating = Math.Round(p.CurrentRating),
                     Wins = p.GameScores.Count(gs => gs.Win),
                     Losses = p.GameScores.Count(gs => gs.Loss),
                     Streak = p.GetCurrentStreak()

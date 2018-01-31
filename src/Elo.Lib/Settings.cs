@@ -2,7 +2,7 @@
 {
     public static class Settings
     {
-        public const int DefaultRating = 1000;
+        public const double DefaultRating = 1000.0;
         public const double KFactor = 32;
     }
 }

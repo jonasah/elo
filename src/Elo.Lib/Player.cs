@@ -5,9 +5,9 @@ namespace Elo.Lib
     public class Player
     {
         public string Name { get; private set; }
-        public int Rating { get; private set; }
+        public double Rating { get; private set; }
 
-        public Player(string name, int rating = Settings.DefaultRating)
+        public Player(string name, double rating = Settings.DefaultRating)
         {
             Name = name;
             Rating = rating;
