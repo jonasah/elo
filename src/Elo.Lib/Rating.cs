@@ -14,7 +14,8 @@ namespace Elo.Lib
         {
             var expected = GetExpectedScore(oldRating, opponentRating);
             var actual = result == Result.Win ? 1.0 : 0.0;
-            return (int)(oldRating + Settings.KFactor * (actual - expected));
+            var newRating = oldRating + Settings.KFactor * (actual - expected);
+            return (int)(newRating + 0.5); // round to nearest integer
         }
 
         public static double GetExpectedScore(int myRating, int opponentRating)
