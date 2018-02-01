@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
 using Elo.DbHandler;
@@ -40,7 +41,7 @@ namespace Elo.WebApp.Controllers
         [HttpGet("playerstats/{player}/h2h")]
         public IEnumerable<Head2HeadRecord> GetHead2HeadRecords([FromRoute(Name = "player")]string playerName)
         {
-            var games = GameHandler.GetGamesByPlayer(playerName);
+            var games = GameHandler.GetGamesByPlayer(playerName, SortOrder.Descending);
 
             return games
                 .SelectMany(g => g.Scores.Where(gs => gs.Player.Name != playerName))
@@ -90,7 +91,7 @@ namespace Elo.WebApp.Controllers
         [HttpGet("games")]
         public IEnumerable<Models.Dto.Game> GetGames(int page = 1, int pageSize = 20)
         {
-            return GameHandler.GetGames(page, pageSize)
+            return GameHandler.GetGames(page, pageSize, SortOrder.Descending)
                 .Select(g => new Models.Dto.Game
                 {
                     Id = g.Id,
@@ -103,7 +104,7 @@ namespace Elo.WebApp.Controllers
         [HttpGet("games/{player}")]
         public IEnumerable<Models.Dto.Game> GetGamesByPlayer(string player, int page = 1, int pageSize = 20)
         {
-            return GameHandler.GetGamesByPlayer(player, page, pageSize)
+            return GameHandler.GetGamesByPlayer(player, page, pageSize, SortOrder.Descending)
                 .Select(g => new Models.Dto.Game
                 {
                     Id = g.Id,
@@ -133,7 +134,7 @@ namespace Elo.WebApp.Controllers
                 RatingHandler.DeleteRatingsAfter(game.Created);
 
                 // get all games after the deleted game
-                var games = GameHandler.GetGamesAfter(game.Created);
+                var games = GameHandler.GetGamesAfter(game.Created, SortOrder.Ascending);
 
                 // recalculate ratings
                 foreach (var g in games)

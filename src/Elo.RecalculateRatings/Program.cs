@@ -3,6 +3,7 @@ using Elo.Models;
 using Elo.Models.Dto;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 
 namespace Elo.RecalculateRatings
@@ -98,7 +99,7 @@ namespace Elo.RecalculateRatings
             }
 
             // get all games
-            var games = GameHandler.GetGames(1, int.MaxValue);
+            var games = GameHandler.GetGamesAfter(DateTime.MinValue, SortOrder.Ascending);
 
             foreach (var game in games)
             {
