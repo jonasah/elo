@@ -56,7 +56,7 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                                 }
                             </td>
                             {this.props.showDate !== false &&
-                                <td className="text-center">{game.date}</td>
+                                <td className="text-center">{new Date(game.date).toLocaleString()}</td>
                             }
                             {this.props.showActions !== false &&
                                 <td className="text-center">

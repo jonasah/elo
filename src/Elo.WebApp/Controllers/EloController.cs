@@ -97,7 +97,7 @@ namespace Elo.WebApp.Controllers
                     Id = g.Id,
                     Winner = g.WinningGameScore.Player.Name,
                     Loser = g.LosingGameScore.Player.Name,
-                    Date = g.Created.ToString("yyyy-MM-dd")
+                    Date = $"{g.Created.ToString()} UTC"
                 });
         }
 
@@ -110,7 +110,7 @@ namespace Elo.WebApp.Controllers
                     Id = g.Id,
                     Winner = g.WinningGameScore.Player.Name,
                     Loser = g.LosingGameScore.Player.Name,
-                    Date = g.Created.ToString("yyyy-MM-dd")
+                    Date = $"{g.Created.ToString()} UTC"
                 });
         }
 
