@@ -11,7 +11,7 @@ namespace Elo.RecalculateRatings
     {
         private static Player GetOrCreatePlayer(string name)
         {
-            var player = PlayerHandler.GetPlayerByName(name, includeRatings: false, includeGameScores: false);
+            var player = PlayerHandler.GetPlayerByName(name);
 
             if (player == null)
             {
@@ -104,7 +104,7 @@ namespace Elo.RecalculateRatings
             // delete all ratings
             RatingHandler.DeleteRatingsAfter(DateTime.MinValue);
 
-            var players = PlayerHandler.GetAllPlayers(includeRatings: false, includeGameScores: false);
+            var players = PlayerHandler.GetAllPlayers();
 
             // set default stats for all players
             foreach (var player in players)

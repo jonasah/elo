@@ -21,7 +21,7 @@ namespace Elo.DbHandler
             return player;
         }
 
-        public static Player GetPlayerByName(string name, bool includeRatings = true, bool includeGameScores = true)
+        public static Player GetPlayerByName(string name, bool includeRatings = false, bool includeGameScores = false)
         {
             using (var db = new EloDbContext())
             {
@@ -46,7 +46,7 @@ namespace Elo.DbHandler
             }
         }
 
-        public static List<Player> GetAllPlayers(bool includeRatings = true, bool includeGameScores = true)
+        public static List<Player> GetAllPlayers(bool includeRatings = false, bool includeGameScores = false)
         {
             using (var db = new EloDbContext())
             {

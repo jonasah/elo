@@ -17,7 +17,7 @@ namespace Elo.WebApp.Controllers
         {
             var rank = 1;
 
-            return PlayerHandler.GetAllPlayers(includeRatings: false, includeGameScores: false)
+            return PlayerHandler.GetAllPlayers()
                 .OrderByDescending(p => p.CurrentRating)
                 .Select(p => new Models.Dto.PlayerRating
                 {
@@ -57,7 +57,7 @@ namespace Elo.WebApp.Controllers
         [HttpGet("playerstats/{player}/expectedscores")]
         public IEnumerable<ExpectedScore> GetExpectedScores([FromRoute(Name = "player")]string playerName)
         {
-            var players = PlayerHandler.GetAllPlayers(includeGameScores: false).ToList();
+            var players = PlayerHandler.GetAllPlayers();
             var player = players.Find(p => p.Name == playerName);
             players.Remove(player);
 
@@ -159,7 +159,7 @@ namespace Elo.WebApp.Controllers
 
         private static Player GetOrCreatePlayer(string name)
         {
-            var player = PlayerHandler.GetPlayerByName(name, includeRatings: false, includeGameScores: false);
+            var player = PlayerHandler.GetPlayerByName(name);
 
             if (player == null)
             {
