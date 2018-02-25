@@ -119,6 +119,9 @@ namespace Elo.WebApp.Controllers
         {
             try
             {
+                // FIXME: delete game not working
+                throw new NotImplementedException();
+
                 // get the game
                 var game = GameHandler.GetGame(id);
 

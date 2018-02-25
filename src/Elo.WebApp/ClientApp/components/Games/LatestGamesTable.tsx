@@ -60,7 +60,7 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
                             }
                             {this.props.showActions !== false &&
                                 <td className="text-center">
-                                <button className="btn btn-default btn-xs" type="button" onClick={() => this.deleteGame(game.id)} disabled={this.state.deleteDisabled}>Delete</button>
+                                <button className="btn btn-default btn-xs" type="button" onClick={() => this.deleteGame(game.id)} disabled={true || this.state.deleteDisabled}>Delete</button>
                                 </td>
                             }
                         </tr>
