@@ -93,6 +93,17 @@ namespace Elo.DbHandler
             return player;
         }
 
+        public static void UpdatePlayers(IEnumerable<Player> players)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.Players.UpdateRange(players);
+                db.SaveChanges();
+            }
+        }
+
+        public static void UpdatePlayers(params Player[] players) => UpdatePlayers(players.AsEnumerable());
+
         private static void SortRatings(Player player)
         {
             player?.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));

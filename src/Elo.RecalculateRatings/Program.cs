@@ -4,7 +4,6 @@ using Elo.Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace Elo.RecalculateRatings
 {
@@ -12,7 +11,7 @@ namespace Elo.RecalculateRatings
     {
         private static Player GetOrCreatePlayer(string name)
         {
-            var player = PlayerHandler.GetPlayerByName(name, includeGameScores: false);
+            var player = PlayerHandler.GetPlayerByName(name, includeRatings: false, includeGameScores: false);
 
             if (player == null)
             {
@@ -56,8 +55,14 @@ namespace Elo.RecalculateRatings
             var p2 = losingPlayer.ToEloLibPlayer();
             p1.WinsAgainst(p2);
 
+            // update stats
             winningPlayer.CurrentRating = p1.Rating;
+            ++winningPlayer.Wins;
+            winningPlayer.CurrentStreak = Math.Max(winningPlayer.CurrentStreak + 1, 1);
+
             losingPlayer.CurrentRating = p2.Rating;
+            ++losingPlayer.Losses;
+            losingPlayer.CurrentStreak = Math.Min(losingPlayer.CurrentStreak - 1, -1);
 
             // update database
             if (addGame)
@@ -80,8 +85,18 @@ namespace Elo.RecalculateRatings
                 });
             }
 
-            RatingHandler.AddRating(winningPlayer.Ratings.Last());
-            RatingHandler.AddRating(losingPlayer.Ratings.Last());
+            PlayerHandler.UpdatePlayers(winningPlayer, losingPlayer);
+
+            RatingHandler.AddRatings(new Models.PlayerRating
+            {
+                PlayerId = winningPlayer.Id,
+                Rating = winningPlayer.CurrentRating
+            },
+            new Models.PlayerRating
+            {
+                PlayerId = losingPlayer.Id,
+                Rating = losingPlayer.CurrentRating
+            });
         }
 
         static void Main(string[] args)
@@ -89,18 +104,30 @@ namespace Elo.RecalculateRatings
             // delete all ratings
             RatingHandler.DeleteRatingsAfter(DateTime.MinValue);
 
-            var players = PlayerHandler.GetAllPlayers(includeGameScores: false);
+            var players = PlayerHandler.GetAllPlayers(includeRatings: false, includeGameScores: false);
 
-            // add default ratings for all players
+            // set default stats for all players
             foreach (var player in players)
             {
+                var defaultRating = new Models.PlayerRating
+                {
+                    PlayerId = player.Id,
+                    Rating = Lib.Settings.DefaultRating
+                };
+
                 player.CurrentRating = Lib.Settings.DefaultRating;
+                player.Wins = 0;
+                player.Losses = 0;
+                player.CurrentStreak = 0;
+
                 PlayerHandler.UpdatePlayer(player);
+                RatingHandler.AddRating(defaultRating);
             }
 
-            // get all games
+            // get all games in chronological order
             var games = GameHandler.GetGamesAfter(DateTime.MinValue, SortOrder.Ascending);
 
+            // calculate new ratings
             foreach (var game in games)
             {
                 CalculateNewRatings(new GameResult

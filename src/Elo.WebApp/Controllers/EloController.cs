@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading;
 using Elo.DbHandler;
 using Elo.Models;
 using Elo.Models.Dto;
@@ -18,7 +17,7 @@ namespace Elo.WebApp.Controllers
         {
             var rank = 1;
 
-            return PlayerHandler.GetAllPlayers()
+            return PlayerHandler.GetAllPlayers(includeRatings: false, includeGameScores: false)
                 .OrderByDescending(p => p.CurrentRating)
                 .Select(p => new Models.Dto.PlayerRating
                 {
@@ -26,9 +25,9 @@ namespace Elo.WebApp.Controllers
                     Rank = rank++,
                     Player = p.Name,
                     Rating = Math.Round(p.CurrentRating),
-                    Wins = p.GameScores.Count(gs => gs.Win),
-                    Losses = p.GameScores.Count(gs => gs.Loss),
-                    Streak = p.GetCurrentStreak()
+                    Wins = p.Wins,
+                    Losses = p.Losses,
+                    Streak = p.CurrentStreak
                 });
         }
 
@@ -158,9 +157,9 @@ namespace Elo.WebApp.Controllers
             }
         }
 
-        private Player GetOrCreatePlayer(string name)
+        private static Player GetOrCreatePlayer(string name)
         {
-            var player = PlayerHandler.GetPlayerByName(name, includeGameScores: false);
+            var player = PlayerHandler.GetPlayerByName(name, includeRatings: false, includeGameScores: false);
 
             if (player == null)
             {
@@ -173,7 +172,7 @@ namespace Elo.WebApp.Controllers
             return player;
         }
 
-        private void ValidateGameResult(GameResult gameResult)
+        private static void ValidateGameResult(GameResult gameResult)
         {
             if (gameResult == null)
             {
@@ -191,7 +190,7 @@ namespace Elo.WebApp.Controllers
             }
         }
 
-        private void CalculateNewRatings(GameResult gameResult, bool addGame)
+        private static void CalculateNewRatings(GameResult gameResult, bool addGame)
         {
             ValidateGameResult(gameResult);
 
@@ -204,8 +203,14 @@ namespace Elo.WebApp.Controllers
             var p2 = losingPlayer.ToEloLibPlayer();
             p1.WinsAgainst(p2);
 
+            // update stats
             winningPlayer.CurrentRating = p1.Rating;
+            ++winningPlayer.Wins;
+            winningPlayer.CurrentStreak = Math.Max(winningPlayer.CurrentStreak + 1, 1);
+
             losingPlayer.CurrentRating = p2.Rating;
+            ++losingPlayer.Losses;
+            losingPlayer.CurrentStreak = Math.Min(losingPlayer.CurrentStreak - 1, -1);
 
             // update database
             if (addGame)
@@ -228,25 +233,18 @@ namespace Elo.WebApp.Controllers
                 });
             }
 
-            RatingHandler.AddRating(winningPlayer.Ratings.Last());
-            RatingHandler.AddRating(losingPlayer.Ratings.Last());
-        }
-    }
+            PlayerHandler.UpdatePlayers(winningPlayer, losingPlayer);
 
-    internal static class Extensions
-    {
-        public static int GetCurrentStreak(this Player player)
-        {
-            var lastGameScore = player.GameScores.Last();
-            var streak = 0;
-            var i = player.GameScores.Count;
-
-            while (--i >= 0 && player.GameScores[i].Score == lastGameScore.Score)
+            RatingHandler.AddRatings(new Models.PlayerRating
             {
-                ++streak;
-            }
-
-            return lastGameScore.Win ? streak : -streak;
+                PlayerId = winningPlayer.Id,
+                Rating = winningPlayer.CurrentRating
+            },
+            new Models.PlayerRating
+            {
+                PlayerId = losingPlayer.Id,
+                Rating = losingPlayer.CurrentRating
+            });
         }
     }
 }

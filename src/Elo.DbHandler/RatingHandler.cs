@@ -1,5 +1,6 @@
 ﻿using Elo.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Elo.DbHandler
@@ -14,6 +15,17 @@ namespace Elo.DbHandler
                 db.SaveChanges();
             }
         }
+
+        public static void AddRatings(IEnumerable<PlayerRating> ratings)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.Ratings.AddRange(ratings);
+                db.SaveChanges();
+            }
+        }
+
+        public static void AddRatings(params PlayerRating[] ratings) => AddRatings(ratings.AsEnumerable());
 
         public static void DeleteRatingsAfter(DateTime timestamp)
         {

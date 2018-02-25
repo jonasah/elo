@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 
 namespace Elo.Models
 {
@@ -16,16 +15,17 @@ namespace Elo.Models
 
         public virtual List<PlayerRating> Ratings { get; set; } = new List<PlayerRating>();
 
-        [NotMapped]
-        public double CurrentRating
-        {
-            get => Ratings.LastOrDefault().Rating;
-            set => Ratings.Add(new PlayerRating
-            {
-                PlayerId = Id,
-                Rating = value
-            });
-        }
+        [Required]
+        public double CurrentRating { get; set; } = Lib.Settings.DefaultRating;
+        [Required]
+        public int Wins { get; set; }
+        [Required]
+        public int Losses { get; set; }
+        [Required]
+        public int CurrentStreak { get; set; }
+
+        public int GamesPlayed => Wins + Losses;
+        public double Pct => (double)Wins / GamesPlayed;
 
         public Lib.Player ToEloLibPlayer()
         {
