@@ -9,7 +9,6 @@ export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
         return <div>
             <div className="row">
                 <div className="col-sm-12">
-                    <h2>Add Game</h2>
                     <AddGameForm />
                     <hr/>
                 </div>
