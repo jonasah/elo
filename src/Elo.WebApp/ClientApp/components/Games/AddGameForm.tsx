@@ -16,6 +16,7 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
         super();
         this.state = { winner: '', loser: '', submitDisabled: false, players: [] };
         this.onSubmit = this.onSubmit.bind(this);
+        this.onClearClicked = this.onClearClicked.bind(this);
         this.onWinnerChange = this.onWinnerChange.bind(this);
         this.onWinnerSelected = this.onWinnerSelected.bind(this);
         this.onLoserChange = this.onLoserChange.bind(this);
@@ -38,7 +39,10 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
                 onValueChange={this.onLoserChange}
                 onItemSelected={this.onLoserSelected}
             />
-            <button type="submit" className="btn btn-default" disabled={this.state.submitDisabled}>Submit</button>
+            <div className="btn-group" role="group">
+                <button type="submit" className="btn btn-default" disabled={this.state.submitDisabled}>Submit</button>
+                <button type="button" className="btn btn-default" onClick={this.onClearClicked}>Clear</button>
+            </div>
         </form>;
     }
 
@@ -55,6 +59,14 @@ export class AddGameForm extends React.Component<{}, AddGameFormState> {
             .then(success => this.setState({
                 winner: '', loser: '', submitDisabled: false
             }));
+    }
+
+    onClearClicked(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault();
+
+        this.setState({
+            winner: '', loser: ''
+        });
     }
 
     onWinnerChange(winner: string) {
