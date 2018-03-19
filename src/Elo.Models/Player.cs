@@ -31,5 +31,17 @@ namespace Elo.Models
         {
             return new Lib.Player(Name, CurrentRating);
         }
+
+        public PlayerRating CreatePlayerRating()
+        {
+            return new PlayerRating
+            {
+                PlayerId = Id,
+                Rating = CurrentRating,
+                Wins = Wins,
+                Losses = Losses,
+                CurrentStreak = CurrentStreak
+            };
+        }
     }
 }

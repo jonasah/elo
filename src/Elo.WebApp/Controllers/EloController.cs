@@ -234,17 +234,7 @@ namespace Elo.WebApp.Controllers
             }
 
             PlayerHandler.UpdatePlayers(winningPlayer, losingPlayer);
-
-            RatingHandler.AddRatings(new Models.PlayerRating
-            {
-                PlayerId = winningPlayer.Id,
-                Rating = winningPlayer.CurrentRating
-            },
-            new Models.PlayerRating
-            {
-                PlayerId = losingPlayer.Id,
-                Rating = losingPlayer.CurrentRating
-            });
+            RatingHandler.AddRatings(winningPlayer.CreatePlayerRating(), losingPlayer.CreatePlayerRating());
         }
     }
 }
