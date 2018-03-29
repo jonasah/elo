@@ -40,6 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Elo.Common\Elo.Common.csproj" />
     <ProjectReference Include="..\Elo.DbHandler\Elo.DbHandler.csproj" />
     <ProjectReference Include="..\Elo.Models\Elo.Models.csproj" />
   </ItemGroup>

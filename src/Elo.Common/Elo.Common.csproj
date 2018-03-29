@@ -1,14 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Elo.Common\Elo.Common.csproj" />
     <ProjectReference Include="..\Elo.DbHandler\Elo.DbHandler.csproj" />
-    <ProjectReference Include="..\Elo.Lib\Elo.Lib.csproj" />
     <ProjectReference Include="..\Elo.Models\Elo.Models.csproj" />
   </ItemGroup>
 
