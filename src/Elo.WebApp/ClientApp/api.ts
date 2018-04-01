@@ -39,8 +39,8 @@
 
 /* GET methods */
 
-export function getRatings(): Promise<Models.Rating[]> {
-    return get('ratings');
+export function getRatings(season: string): Promise<Models.Rating[]> {
+    return get('ratings/' + season);
 }
 
 export function getPlayers(): Promise<string[]> {
@@ -59,12 +59,20 @@ export function getLatestGames(numGames: number, player?: string): Promise<Model
     return get(relativeUrl);
 }
 
-export function getHead2HeadRecords(player: string): Promise<Models.Head2HeadRecord[]> {
-    return get('playerstats/' + player + '/h2h');
+export function getHead2HeadRecords(player: string, season: string): Promise<Models.Head2HeadRecord[]> {
+    return get('playerstats/' + player + '/' + season + '/h2h');
 }
 
-export function getExpectedScores(player: string): Promise<Models.ExpectedScore[]> {
-    return get('playerstats/' + player + '/expectedscores');
+export function getExpectedScores(player: string, season: string): Promise<Models.ExpectedScore[]> {
+    return get('playerstats/' + player + '/' + season + '/expectedscores');
+}
+
+export function getActiveSeasons(): Promise<string[]> {
+    return get('activeseasons');
+}
+
+export function getStartedSeasons(): Promise<string[]> {
+    return get('startedseasons');
 }
 
 /* POST methods */

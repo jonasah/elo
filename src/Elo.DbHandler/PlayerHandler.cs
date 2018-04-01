@@ -9,9 +9,6 @@ namespace Elo.DbHandler
     {
         public static Player AddPlayer(Player player)
         {
-            player.Ratings.Clear();
-            player.Ratings.Add(new PlayerRating());
-
             using (var db = new EloDbContext())
             {
                 db.Players.Add(player);
@@ -21,53 +18,33 @@ namespace Elo.DbHandler
             return player;
         }
 
-        public static Player GetPlayerByName(string name, bool includeRatings = false, bool includeGameScores = false)
+        public static Player GetPlayerById(int id)
         {
             using (var db = new EloDbContext())
             {
-                var query = db.Players.AsQueryable();
-
-                if (includeRatings)
-                {
-                    query = query.Include(p => p.Ratings);
-                }
-
-                if (includeGameScores)
-                {
-                    query = query.Include(p => p.GameScores);
-                }
-
-                var player = query.FirstOrDefault(p => p.Name == name);
-
-                SortRatings(player);
-                SortGameScores(player);
-
-                return player;
+                return db.Players
+                    .Include(p => p.Seasons)
+                    .FirstOrDefault(p => p.Id == id);
             }
         }
 
-        public static List<Player> GetAllPlayers(bool includeRatings = false, bool includeGameScores = false)
+        public static Player GetPlayerByName(string name)
         {
             using (var db = new EloDbContext())
             {
-                var query = db.Players.AsQueryable();
+                return db.Players
+                    .Include(p => p.Seasons)
+                    .FirstOrDefault(p => p.Name == name);
+            }
+        }
 
-                if (includeRatings)
-                {
-                    query = query.Include(p => p.Ratings);
-                }
-
-                if (includeGameScores)
-                {
-                    query = query.Include(p => p.GameScores);
-                }
-
-                var players = query.ToList();
-
-                players.ForEach(p => SortRatings(p));
-                players.ForEach(p => SortGameScores(p));
-
-                return players;
+        public static List<Player> GetAllPlayers()
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.Players
+                    .Include(p => p.Seasons)
+                    .ToList();
             }
         }
 
@@ -102,16 +79,53 @@ namespace Elo.DbHandler
             }
         }
 
-        public static void UpdatePlayers(params Player[] players) => UpdatePlayers(players.AsEnumerable());
+        public static void UpdatePlayers(params Player[] players) =>
+            UpdatePlayers(players.AsEnumerable());
 
-        private static void SortRatings(Player player)
+        public static List<PlayerSeason> GetAllPlayerSeasons(int seasonId)
         {
-            player?.Ratings.Sort((r1, r2) => r1.Created.CompareTo(r2.Created));
+            using (var db = new EloDbContext())
+            {
+                return db.PlayerSeasons
+                    .Where(s => s.SeasonId == seasonId)
+                    .Include(ps => ps.Player)
+                    .ToList();
+            }
         }
 
-        private static void SortGameScores(Player player)
+        public static List<PlayerSeason> GetAllPlayerSeasons(string seasonName) =>
+            GetAllPlayerSeasons(SeasonHandler.GetSeason(seasonName).Id);
+
+        public static PlayerSeason AddPlayerSeason(PlayerSeason playerSeason)
         {
-            player?.GameScores.Sort((gs1, gs2) => gs1.Created.CompareTo(gs2.Created));
+            using (var db = new EloDbContext())
+            {
+                db.PlayerSeasons.Add(playerSeason);
+                db.SaveChanges();
+            }
+
+            return playerSeason;
+        }
+
+        public static void UpdatePlayerSeasons(IEnumerable<PlayerSeason> playerSeasons)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.PlayerSeasons.UpdateRange(playerSeasons);
+                db.SaveChanges();
+            }
+        }
+
+        public static void UpdatePlayerSeasons(params PlayerSeason[] playerSeasons) =>
+            UpdatePlayerSeasons(playerSeasons.AsEnumerable());
+
+        public static void DeleteAllPlayerSeasons()
+        {
+            using (var db = new EloDbContext())
+            {
+                db.PlayerSeasons.RemoveRange(db.PlayerSeasons);
+                db.SaveChanges();
+            }
         }
     }
 }

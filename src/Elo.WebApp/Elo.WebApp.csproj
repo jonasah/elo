@@ -36,6 +36,7 @@
     <None Remove="ClientApp\components\PlayerStats\PlayerStats.tsx" />
     <None Remove="ClientApp\components\RatingsTable.tsx" />
     <None Remove="ClientApp\components\Ratings\Ratings.tsx" />
+    <None Remove="ClientApp\components\Seasons\SeasonSelect.tsx" />
     <None Remove="ClientApp\components\TextInputWithButtonDropdown.tsx" />
   </ItemGroup>
 
@@ -61,6 +62,7 @@
     <TypeScriptCompile Include="ClientApp\components\Controls\TextInputWithButtonDropdown.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Ratings\Ratings.tsx" />
     <TypeScriptCompile Include="ClientApp\components\Ratings\RatingsTable.tsx" />
+    <TypeScriptCompile Include="ClientApp\components\Seasons\SeasonSelect.tsx" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">

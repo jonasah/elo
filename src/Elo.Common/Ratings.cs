@@ -1,91 +1,60 @@
 ﻿using Elo.DbHandler;
 using Elo.Models;
-using Elo.Models.Dto;
 using System;
-using System.Collections.Generic;
 
 namespace Elo.Common
 {
     public static class Ratings
     {
-        public static void CalculateNewRatings(GameResult gameResult, bool addGame)
+        public static void CalculateNewRatings(Game game)
         {
-            ValidateGameResult(gameResult);
-
             // fetch players from database
-            var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
-            var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
+            var winningPlayer = PlayerHandler.GetPlayerById(game.WinningGameScore.PlayerId);
+            var losingPlayer = PlayerHandler.GetPlayerById(game.LosingGameScore.PlayerId);
 
-            // convert to Elo.Lib.Players and calculate new ratings
-            var p1 = winningPlayer.ToEloLibPlayer();
-            var p2 = losingPlayer.ToEloLibPlayer();
-            p1.WinsAgainst(p2);
+            // fetch active seasons
+            var activeSeasons = SeasonHandler.GetActiveSeasons(game.Created);
 
-            // update stats
-            winningPlayer.CurrentRating = p1.Rating;
-            ++winningPlayer.Wins;
-            winningPlayer.CurrentStreak = Math.Max(winningPlayer.CurrentStreak + 1, 1);
-
-            losingPlayer.CurrentRating = p2.Rating;
-            ++losingPlayer.Losses;
-            losingPlayer.CurrentStreak = Math.Min(losingPlayer.CurrentStreak - 1, -1);
-
-            // update database
-            if (addGame)
+            foreach (var season in activeSeasons)
             {
-                GameHandler.AddGame(new Models.Game
-                {
-                    Scores = new List<GameScore>
-                    {
-                        new GameScore
-                        {
-                            PlayerId = winningPlayer.Id,
-                            Score = 1.0
-                        },
-                        new GameScore
-                        {
-                            PlayerId = losingPlayer.Id,
-                            Score = 0.0
-                        }
-                    }
-                });
-            }
+                var winningPlayerSeason = GetOrCreatePlayerSeason(winningPlayer, season);
+                var losingPlayerSeason = GetOrCreatePlayerSeason(losingPlayer, season);
 
-            PlayerHandler.UpdatePlayers(winningPlayer, losingPlayer);
-            RatingHandler.AddRatings(winningPlayer.CreatePlayerRating(), losingPlayer.CreatePlayerRating());
+                // convert to Elo.Lib.Players and calculate new ratings
+                var p1 = winningPlayerSeason.ToEloLibPlayer();
+                var p2 = losingPlayerSeason.ToEloLibPlayer();
+                p1.WinsAgainst(p2);
+
+                // update stats
+                winningPlayerSeason.CurrentRating = p1.Rating;
+                ++winningPlayerSeason.Wins;
+                winningPlayerSeason.CurrentStreak = Math.Max(winningPlayerSeason.CurrentStreak + 1, 1);
+
+                losingPlayerSeason.CurrentRating = p2.Rating;
+                ++losingPlayerSeason.Losses;
+                losingPlayerSeason.CurrentStreak = Math.Min(losingPlayerSeason.CurrentStreak - 1, -1);
+
+                PlayerHandler.UpdatePlayerSeasons(winningPlayerSeason, losingPlayerSeason);
+                RatingHandler.AddRatings(winningPlayerSeason.CreatePlayerRating(), losingPlayerSeason.CreatePlayerRating());
+            }
         }
 
-        private static Player GetOrCreatePlayer(string name)
+        private static PlayerSeason GetOrCreatePlayerSeason(Player player, Season season)
         {
-            var player = PlayerHandler.GetPlayerByName(name);
+            var playerSeason = player.Seasons.Find(ps => ps.SeasonId == season.Id);
 
-            if (player == null)
+            if (playerSeason == null)
             {
-                player = PlayerHandler.AddPlayer(new Player
+                playerSeason = PlayerHandler.AddPlayerSeason(new PlayerSeason
                 {
-                    Name = name
+                    PlayerId = player.Id,
+                    SeasonId = season.Id
                 });
+
+                RatingHandler.AddRating(playerSeason.CreatePlayerRating());
             }
 
-            return player;
-        }
-
-        private static void ValidateGameResult(GameResult gameResult)
-        {
-            if (gameResult == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            if (string.IsNullOrEmpty(gameResult.Winner) || string.IsNullOrEmpty(gameResult.Loser))
-            {
-                throw new ArgumentException("Winner and/or loser is not set");
-            }
-
-            if (gameResult.Winner == gameResult.Loser)
-            {
-                throw new ArgumentException("Winner and loser cannot be the same player");
-            }
+            return playerSeason;
         }
     }
 }

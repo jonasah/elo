@@ -13,35 +13,6 @@ namespace Elo.Models
 
         public virtual List<GameScore> GameScores { get; set; } = new List<GameScore>();
 
-        public virtual List<PlayerRating> Ratings { get; set; } = new List<PlayerRating>();
-
-        [Required]
-        public double CurrentRating { get; set; } = Lib.Settings.DefaultRating;
-        [Required]
-        public int Wins { get; set; }
-        [Required]
-        public int Losses { get; set; }
-        [Required]
-        public int CurrentStreak { get; set; }
-
-        public int GamesPlayed => Wins + Losses;
-        public double Pct => (double)Wins / GamesPlayed;
-
-        public Lib.Player ToEloLibPlayer()
-        {
-            return new Lib.Player(Name, CurrentRating);
-        }
-
-        public PlayerRating CreatePlayerRating()
-        {
-            return new PlayerRating
-            {
-                PlayerId = Id,
-                Rating = CurrentRating,
-                Wins = Wins,
-                Losses = Losses,
-                CurrentStreak = CurrentStreak
-            };
-        }
+        public virtual List<PlayerSeason> Seasons { get; set; } = new List<PlayerSeason>();
     }
 }

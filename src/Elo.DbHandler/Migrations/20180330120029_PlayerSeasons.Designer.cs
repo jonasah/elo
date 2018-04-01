@@ -11,9 +11,10 @@ using System;
 namespace Elo.DbHandler.Migrations
 {
     [DbContext(typeof(EloDbContext))]
-    partial class EloDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180330120029_PlayerSeasons")]
+    partial class PlayerSeasons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

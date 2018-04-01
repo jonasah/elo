@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Elo.Common;
 using Elo.DbHandler;
+using Elo.Models;
 using Elo.Models.Dto;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,22 +13,22 @@ namespace Elo.WebApp.Controllers
     [Route("api/elo")]
     public class EloController : Controller
     {
-        [HttpGet("ratings")]
-        public IEnumerable<Models.Dto.PlayerRating> GetPlayerRatings()
+        [HttpGet("ratings/{season}")]
+        public IEnumerable<Models.Dto.PlayerRating> GetPlayerRatings([FromRoute(Name = "season")]string seasonName)
         {
             var rank = 1;
 
-            return PlayerHandler.GetAllPlayers()
-                .OrderByDescending(p => p.CurrentRating)
-                .Select(p => new Models.Dto.PlayerRating
+            return PlayerHandler.GetAllPlayerSeasons(seasonName)
+                .OrderByDescending(ps => ps.CurrentRating)
+                .Select(ps => new Models.Dto.PlayerRating
                 {
-                    Id = p.Id,
+                    Id = ps.Id,
                     Rank = rank++,
-                    Player = p.Name,
-                    Rating = Math.Round(p.CurrentRating),
-                    Wins = p.Wins,
-                    Losses = p.Losses,
-                    Streak = p.CurrentStreak
+                    Player = ps.Player.Name,
+                    Rating = Math.Round(ps.CurrentRating),
+                    Wins = ps.Wins,
+                    Losses = ps.Losses,
+                    Streak = ps.CurrentStreak
                 });
         }
 
@@ -37,10 +38,15 @@ namespace Elo.WebApp.Controllers
             return PlayerHandler.GetAllPlayerNames();
         }
 
-        [HttpGet("playerstats/{player}/h2h")]
-        public IEnumerable<Head2HeadRecord> GetHead2HeadRecords([FromRoute(Name = "player")]string playerName)
+        [HttpGet("playerstats/{player}/{season}/h2h")]
+        public IEnumerable<Head2HeadRecord> GetHead2HeadRecords(
+            [FromRoute(Name = "player")]string playerName,
+            [FromRoute(Name = "season")]string seasonName)
         {
-            var games = GameHandler.GetGamesByPlayer(playerName, SortOrder.Descending);
+            var season = SeasonHandler.GetSeason(seasonName);
+            var games = GameHandler
+                .GetGamesByPlayer(playerName, SortOrder.Descending)
+                .FindAll(g => season.IsActive(g.Created));
 
             return games
                 .SelectMany(g => g.Scores.Where(gs => gs.Player.Name != playerName))
@@ -54,20 +60,29 @@ namespace Elo.WebApp.Controllers
                 .OrderBy(h2h => h2h.Opponent);
         }
 
-        [HttpGet("playerstats/{player}/expectedscores")]
-        public IEnumerable<ExpectedScore> GetExpectedScores([FromRoute(Name = "player")]string playerName)
+        [HttpGet("playerstats/{player}/{season}/expectedscores")]
+        public IEnumerable<ExpectedScore> GetExpectedScores(
+            [FromRoute(Name = "player")]string playerName,
+            [FromRoute(Name = "season")]string seasonName)
         {
-            var players = PlayerHandler.GetAllPlayers();
-            var player = players.Find(p => p.Name == playerName);
-            players.Remove(player);
+            var playerSeasons = PlayerHandler.GetAllPlayerSeasons(seasonName).ToList();
+            var myPlayerSeason = playerSeasons.Find(ps => ps.Player.Name == playerName);
 
-            var libPlayer = player.ToEloLibPlayer();
+            if (myPlayerSeason == null)
+            {
+                // player did not compete in this season
+                return new ExpectedScore[0];
+            }
 
-            return players
-                .Select(p => new ExpectedScore
+            playerSeasons.Remove(myPlayerSeason);
+
+            var libPlayer = myPlayerSeason.ToEloLibPlayer();
+
+            return playerSeasons
+                .Select(ps => new ExpectedScore
                 {
-                    Opponent = p.Name,
-                    Score = libPlayer.ExpectedScore(p.ToEloLibPlayer())
+                    Opponent = ps.Player.Name,
+                    Score = libPlayer.ExpectedScore(ps.ToEloLibPlayer())
                 })
                 .OrderByDescending(es => es.Score);
         }
@@ -77,7 +92,29 @@ namespace Elo.WebApp.Controllers
         {
             try
             {
-                Ratings.CalculateNewRatings(gameResult, addGame: true);
+                ValidateGameResult(gameResult);
+
+                var winningPlayer = GetOrCreatePlayer(gameResult.Winner);
+                var losingPlayer = GetOrCreatePlayer(gameResult.Loser);
+
+                var game = GameHandler.AddGame(new Models.Game
+                {
+                    Scores = new List<GameScore>
+                    {
+                        new GameScore
+                        {
+                            PlayerId = winningPlayer.Id,
+                            Score = 1.0
+                        },
+                        new GameScore
+                        {
+                            PlayerId = losingPlayer.Id,
+                            Score = 0.0
+                        }
+                    }
+                });
+
+                Ratings.CalculateNewRatings(game);
 
                 return true;
             }
@@ -139,21 +176,77 @@ namespace Elo.WebApp.Controllers
                 var games = GameHandler.GetGamesAfter(game.Created, SortOrder.Ascending);
 
                 // recalculate ratings
-                foreach (var g in games)
-                {
-                    Ratings.CalculateNewRatings(new GameResult
-                    {
-                        Winner = g.WinningGameScore.Player.Name,
-                        Loser = g.LosingGameScore.Player.Name
-                    },
-                    addGame: false);
-                }
+                games.ForEach(g => Ratings.CalculateNewRatings(g));
 
                 return true;
             }
             catch (Exception /*ex*/)
             {
                 return false;
+            }
+        }
+
+        [HttpPost("season")]
+        public bool AddSeason([FromBody]SeasonPost seasonPost)
+        {
+            SeasonHandler.AddSeason(new Season
+            {
+                Name = seasonPost.Name,
+                StartDate = seasonPost.StartDate,
+                EndDate = seasonPost.EndDate
+            });
+
+            return true;
+        }
+
+        [HttpGet("activeseasons")]
+        public IEnumerable<string> GetActiveSeasons()
+        {
+            return SeasonHandler
+                .GetActiveSeasons(DateTimeOffset.UtcNow)
+                .OrderBy(s => s.StartDate)
+                .Select(s => s.Name);
+        }
+
+        [HttpGet("startedseasons")]
+        public IEnumerable<string> GetStartedSeasons()
+        {
+            return SeasonHandler
+                .GetStartedSeasons(DateTimeOffset.UtcNow)
+                .OrderBy(s => s.StartDate)
+                .Select(s => s.Name);
+        }
+
+        private static Player GetOrCreatePlayer(string name)
+        {
+            var player = PlayerHandler.GetPlayerByName(name);
+
+            if (player == null)
+            {
+                player = PlayerHandler.AddPlayer(new Player
+                {
+                    Name = name
+                });
+            }
+
+            return player;
+        }
+
+        private static void ValidateGameResult(GameResult gameResult)
+        {
+            if (gameResult == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            if (string.IsNullOrEmpty(gameResult.Winner) || string.IsNullOrEmpty(gameResult.Loser))
+            {
+                throw new ArgumentException("Winner and/or loser is not set");
+            }
+
+            if (gameResult.Winner == gameResult.Loser)
+            {
+                throw new ArgumentException("Winner and loser cannot be the same player");
             }
         }
     }

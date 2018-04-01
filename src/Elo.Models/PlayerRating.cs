@@ -7,8 +7,8 @@ namespace Elo.Models
     public class PlayerRating : ModelBase
     {
         [Required]
-        public int PlayerId { get; set; }
-        public virtual Player Player { get; set; }
+        public int PlayerSeasonId { get; set; }
+        public virtual PlayerSeason PlayerSeason { get; set; }
 
         [Required]
         public double Rating { get; set; } = Lib.Settings.DefaultRating;

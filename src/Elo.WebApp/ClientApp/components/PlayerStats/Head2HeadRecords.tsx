@@ -5,6 +5,7 @@ import * as Api from '../../api';
 
 interface Head2HeadRecordsProps {
     player: string;
+    season: string;
 }
 
 interface Head2HeadRecordsState {
@@ -48,7 +49,11 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
     }
 
     fetchRecords(props: Head2HeadRecordsProps) {
-        Api.getHead2HeadRecords(props.player)
+        if (props.season === undefined) {
+            return;
+        }
+
+        Api.getHead2HeadRecords(props.player, props.season)
             .then(data => this.setState({ records: data }));
     }
 
@@ -57,7 +62,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
     }
 
     componentWillReceiveProps(nextProps: Readonly<Head2HeadRecordsProps>) {
-        if (this.props.player != nextProps.player) {
+        if (this.props.player != nextProps.player || this.props.season != nextProps.season) {
             this.setState({ records: [] });
             this.fetchRecords(nextProps);
         }

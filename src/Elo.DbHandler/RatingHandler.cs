@@ -35,5 +35,10 @@ namespace Elo.DbHandler
                 db.SaveChanges();
             }
         }
+
+        public static void DeleteAllRatings()
+        {
+            DeleteRatingsAfter(DateTime.MinValue);
+        }
     }
 }

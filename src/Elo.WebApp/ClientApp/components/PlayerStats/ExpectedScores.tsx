@@ -4,6 +4,7 @@ import * as Api from '../../api';
 
 interface ExpectedScoresProps {
     player: string;
+    season: string;
 }
 
 interface ExpectedScoresState {
@@ -42,7 +43,11 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
     }
 
     fetchScores(props: ExpectedScoresProps) {
-        Api.getExpectedScores(props.player).then(data => this.setState({ scores: data }));
+        if (props.season === undefined) {
+            return;
+        }
+
+        Api.getExpectedScores(props.player, props.season).then(data => this.setState({ scores: data }));
     }
 
     componentWillMount() {
@@ -50,7 +55,7 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
     }
 
     componentWillReceiveProps(nextProps: Readonly<ExpectedScoresProps>) {
-        if (this.props.player != nextProps.player) {
+        if (this.props.player != nextProps.player || this.props.season != nextProps.season) {
             this.setState({ scores: [] });
             this.fetchScores(nextProps);
         }

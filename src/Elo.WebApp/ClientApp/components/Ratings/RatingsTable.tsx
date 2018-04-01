@@ -4,6 +4,7 @@ import { PlayerStatsLink } from '../Common/PlayerStatsLink';
 import * as Api from '../../api';
 
 interface RatingsTableProps {
+    season: string;
     onRatingsUpdate?: () => void;
 }
 
@@ -52,13 +53,17 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
         </table>;
     }
 
-    fetchRatings() {
-        Api.getRatings()
+    fetchRatings(props: RatingsTableProps) {
+        if (props.season === undefined) {
+            return;
+        }
+
+        Api.getRatings(props.season)
             .then(data => {
                 this.setState({ ratings: data });
 
-                if (this.props.onRatingsUpdate !== undefined) {
-                    this.props.onRatingsUpdate();
+                if (props.onRatingsUpdate !== undefined) {
+                    props.onRatingsUpdate();
                 }
             });
     }
@@ -69,14 +74,21 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
     }
 
     componentWillMount() {
-        this.fetchRatings();
+        this.fetchRatings(this.props);
     }
 
     componentDidMount() {
-        this.timerId = setInterval(() => this.fetchRatings(), 3000);
+        this.timerId = setInterval(() => this.fetchRatings(this.props), 3000);
     }
 
     componentWillUnmount() {
         clearInterval(this.timerId);
+    }
+
+    componentWillReceiveProps(nextProps: Readonly<RatingsTableProps>) {
+        if (this.props.season != nextProps.season) {
+            this.setState({ ratings: [] });
+            this.fetchRatings(nextProps);
+        }
     }
 }

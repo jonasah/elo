@@ -11,9 +11,10 @@ using System;
 namespace Elo.DbHandler.Migrations
 {
     [DbContext(typeof(EloDbContext))]
-    partial class EloDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180319183402_Seasons")]
+    partial class Seasons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,9 +68,17 @@ namespace Elo.DbHandler.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasDefaultValueSql("getutcdate()");
 
+                    b.Property<double>("CurrentRating");
+
+                    b.Property<int>("CurrentStreak");
+
+                    b.Property<int>("Losses");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
+
+                    b.Property<int>("Wins");
 
                     b.HasKey("Id");
 
@@ -92,7 +101,7 @@ namespace Elo.DbHandler.Migrations
 
                     b.Property<int>("Losses");
 
-                    b.Property<int>("PlayerSeasonId");
+                    b.Property<int>("PlayerId");
 
                     b.Property<double>("Rating");
 
@@ -100,39 +109,9 @@ namespace Elo.DbHandler.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayerSeasonId");
-
-                    b.ToTable("PlayerRatings");
-                });
-
-            modelBuilder.Entity("Elo.Models.PlayerSeason", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasDefaultValueSql("getutcdate()");
-
-                    b.Property<double>("CurrentRating");
-
-                    b.Property<int>("CurrentStreak");
-
-                    b.Property<int>("Losses");
-
-                    b.Property<int>("PlayerId");
-
-                    b.Property<int>("SeasonId");
-
-                    b.Property<int>("Wins");
-
-                    b.HasKey("Id");
-
                     b.HasIndex("PlayerId");
 
-                    b.HasIndex("SeasonId");
-
-                    b.ToTable("PlayerSeasons");
+                    b.ToTable("PlayerRatings");
                 });
 
             modelBuilder.Entity("Elo.Models.Season", b =>
@@ -174,22 +153,9 @@ namespace Elo.DbHandler.Migrations
 
             modelBuilder.Entity("Elo.Models.PlayerRating", b =>
                 {
-                    b.HasOne("Elo.Models.PlayerSeason", "PlayerSeason")
-                        .WithMany("Ratings")
-                        .HasForeignKey("PlayerSeasonId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Elo.Models.PlayerSeason", b =>
-                {
                     b.HasOne("Elo.Models.Player", "Player")
-                        .WithMany("Seasons")
+                        .WithMany("Ratings")
                         .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Elo.Models.Season", "Season")
-                        .WithMany()
-                        .HasForeignKey("SeasonId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
