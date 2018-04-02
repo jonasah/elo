@@ -43,7 +43,7 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
     }
 
     fetchScores(props: ExpectedScoresProps) {
-        if (props.season === undefined) {
+        if (props.player == '' || props.season == '') {
             return;
         }
 

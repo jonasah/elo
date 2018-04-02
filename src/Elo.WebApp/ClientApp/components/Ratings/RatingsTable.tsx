@@ -54,7 +54,7 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
     }
 
     fetchRatings(props: RatingsTableProps) {
-        if (props.season === undefined) {
+        if (props.season == '') {
             return;
         }
 

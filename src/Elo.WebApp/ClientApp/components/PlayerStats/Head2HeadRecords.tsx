@@ -49,7 +49,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
     }
 
     fetchRecords(props: Head2HeadRecordsProps) {
-        if (props.season === undefined) {
+        if (props.player == '' || props.season == '') {
             return;
         }
 
