@@ -17,7 +17,7 @@ export class Ratings extends React.Component<RatingsProps, RatingsState> {
     constructor(props: RatingsProps) {
         super(props);
 
-        this.state = { lastUpdate: new Date(), selectedSeason: 'Master' };
+        this.state = { lastUpdate: new Date(), selectedSeason: '' };
 
         this.onRatingsUpdated = this.onRatingsUpdated.bind(this);
         this.onSeasonSelected = this.onSeasonSelected.bind(this);

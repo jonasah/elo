@@ -37,12 +37,13 @@ export class SeasonSelect extends React.Component<SeasonSelectProps, SeasonSelec
     }
 
     componentWillMount() {
-        if (this.props.onlyActiveSeasons === true) {
-            Api.getActiveSeasons().then(data => this.setState({ seasons: data }));
-        }
-        else {
-            Api.getStartedSeasons().then(data => this.setState({ seasons: data }));
-        }
+        var apiCall = (this.props.onlyActiveSeasons === true ? Api.getActiveSeasons : Api.getStartedSeasons);
+
+        apiCall()
+            .then(data => {
+                this.setState({ seasons: data });
+                this.props.onSeasonSelected(data[data.length - 1]);
+            });
     }
 
     isSelectedSeason(season: string) {

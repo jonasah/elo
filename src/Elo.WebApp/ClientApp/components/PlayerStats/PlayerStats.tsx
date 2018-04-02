@@ -17,7 +17,7 @@ export class PlayerStats extends React.Component<RouteComponentProps<PlayerStats
     constructor(props: RouteComponentProps<PlayerStatsProps>) {
         super(props);
 
-        this.state = { selectedSeason: 'Master' };
+        this.state = { selectedSeason: '' };
 
         this.onSeasonSelected = this.onSeasonSelected.bind(this);
     }
