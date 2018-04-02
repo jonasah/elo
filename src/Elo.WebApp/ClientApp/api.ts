@@ -67,12 +67,24 @@ export function getExpectedScores(player: string, season: string): Promise<Model
     return get('playerstats/' + player + '/' + season + '/expectedscores');
 }
 
-export function getActiveSeasons(): Promise<string[]> {
-    return get('activeseasons');
+export function getActiveSeasons(player?: string): Promise<string[]> {
+    var relativeUrl = 'activeseasons';
+
+    if (player !== undefined) {
+        relativeUrl += '/' + player;
+    }
+
+    return get(relativeUrl);
 }
 
-export function getStartedSeasons(): Promise<string[]> {
-    return get('startedseasons');
+export function getStartedSeasons(player?: string): Promise<string[]> {
+    var relativeUrl = 'startedseasons';
+
+    if (player !== undefined) {
+        relativeUrl += '/' + player;
+    }
+
+    return get(relativeUrl);
 }
 
 /* POST methods */

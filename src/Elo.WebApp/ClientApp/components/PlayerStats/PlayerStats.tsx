@@ -29,6 +29,7 @@ export class PlayerStats extends React.Component<RouteComponentProps<PlayerStats
                 <SeasonSelect
                     selectedSeason={this.state.selectedSeason}
                     onSeasonSelected={this.onSeasonSelected}
+                    player={this.props.match.params.player}
                 />
             </div>
             <div className="row">

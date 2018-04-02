@@ -5,6 +5,7 @@ interface SeasonSelectProps {
     selectedSeason: string;
     onSeasonSelected: (name: string) => void;
     onlyActiveSeasons?: boolean;
+    player?: string;
 }
 
 interface SeasonSelectState {
@@ -37,12 +38,23 @@ export class SeasonSelect extends React.Component<SeasonSelectProps, SeasonSelec
     }
 
     componentWillMount() {
-        var apiCall = (this.props.onlyActiveSeasons === true ? Api.getActiveSeasons : Api.getStartedSeasons);
+        this.fetchSeasons(this.props);
+    }
 
-        apiCall()
+    componentWillReceiveProps(nextProps: Readonly<SeasonSelectProps>) {
+        if (nextProps.player != this.props.player) {
+            this.setState({ seasons: [] });
+            this.fetchSeasons(nextProps);
+        }
+    }
+
+    fetchSeasons(props: SeasonSelectProps) {
+        var apiCall = (props.onlyActiveSeasons === true ? Api.getActiveSeasons : Api.getStartedSeasons);
+
+        apiCall(props.player)
             .then(data => {
                 this.setState({ seasons: data });
-                this.props.onSeasonSelected(data[data.length - 1]);
+                props.onSeasonSelected(data[data.length - 1]);
             });
     }
 

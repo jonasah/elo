@@ -208,11 +208,29 @@ namespace Elo.WebApp.Controllers
                 .Select(s => s.Name);
         }
 
+        [HttpGet("activeseasons/{player}")]
+        public IEnumerable<string> GetActiveSeasonsByPlayer([FromRoute(Name = "player")]string playerName)
+        {
+            return SeasonHandler
+                .GetActiveSeasonsByPlayer(DateTimeOffset.UtcNow, playerName)
+                .OrderBy(s => s.StartDate)
+                .Select(s => s.Name);
+        }
+
         [HttpGet("startedseasons")]
         public IEnumerable<string> GetStartedSeasons()
         {
             return SeasonHandler
                 .GetStartedSeasons(DateTimeOffset.UtcNow)
+                .OrderBy(s => s.StartDate)
+                .Select(s => s.Name);
+        }
+
+        [HttpGet("startedseasons/{player}")]
+        public IEnumerable<string> GetStartedSeasonsByPlayer([FromRoute(Name = "player")]string playerName)
+        {
+            return SeasonHandler
+                .GetStartedSeasonsByPlayer(DateTimeOffset.UtcNow, playerName)
                 .OrderBy(s => s.StartDate)
                 .Select(s => s.Name);
         }
