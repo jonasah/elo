@@ -93,8 +93,17 @@ namespace Elo.DbHandler
             }
         }
 
-        public static List<PlayerSeason> GetAllPlayerSeasons(string seasonName) =>
-            GetAllPlayerSeasons(SeasonHandler.GetSeason(seasonName).Id);
+        public static List<PlayerSeason> GetAllPlayerSeasons(string seasonName)
+        {
+            var season = SeasonHandler.GetSeason(seasonName);
+
+            if (season == null)
+            {
+                return new List<PlayerSeason>();
+            }
+
+            return GetAllPlayerSeasons(season.Id);
+        }
 
         public static PlayerSeason AddPlayerSeason(PlayerSeason playerSeason)
         {

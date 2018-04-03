@@ -44,6 +44,12 @@ namespace Elo.WebApp.Controllers
             [FromRoute(Name = "season")]string seasonName)
         {
             var season = SeasonHandler.GetSeason(seasonName);
+
+            if (season == null)
+            {
+                return new Head2HeadRecord[0];
+            }
+
             var games = GameHandler
                 .GetGamesByPlayer(playerName, SortOrder.Descending)
                 .FindAll(g => season.IsActive(g.Created));
