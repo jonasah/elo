@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Elo.Models
 {
@@ -18,34 +16,14 @@ namespace Elo.Models
         public virtual Season Season { get; set; }
 
         [Required]
-        public double CurrentRating { get; set; } = Lib.Settings.DefaultRating;
-        [Required]
-        public int Wins { get; set; }
-        [Required]
-        public int Losses { get; set; }
-        [Required]
-        public int CurrentStreak { get; set; }
+        public int CurrentPlayerRatingId { get; set; }
+        public virtual PlayerRating CurrentPlayerRating { get; set; }
 
-        public int GamesPlayed => Wins + Losses;
-        public double Pct => (double)Wins / GamesPlayed;
-
-        public virtual List<PlayerRating> Ratings { get; set; } = new List<PlayerRating>();
+        public virtual List<PlayerSeasonRating> Ratings { get; set; }
 
         public Lib.Player ToEloLibPlayer()
         {
-            return new Lib.Player(Player?.Name, CurrentRating);
-        }
-
-        public PlayerRating CreatePlayerRating()
-        {
-            return new PlayerRating
-            {
-                PlayerSeasonId = Id,
-                Rating = CurrentRating,
-                Wins = Wins,
-                Losses = Losses,
-                CurrentStreak = CurrentStreak
-            };
+            return new Lib.Player(Player?.Name, CurrentPlayerRating.Rating);
         }
     }
 }

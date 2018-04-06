@@ -40,5 +40,17 @@ namespace Elo.DbHandler
         {
             DeleteRatingsAfter(DateTime.MinValue);
         }
+
+        public static void AddPlayerSeasonRatings(IEnumerable<PlayerSeasonRating> playerSeasonRatings)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.PlayerSeasonRatings.AddRange(playerSeasonRatings);
+                db.SaveChanges();
+            }
+        }
+
+        public static void AddPlayerSeasonRatings(params PlayerSeasonRating[] playerSeasonRatings) =>
+            AddPlayerSeasonRatings(playerSeasonRatings.AsEnumerable());
     }
 }

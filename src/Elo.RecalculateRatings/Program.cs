@@ -11,9 +11,8 @@ namespace Elo.RecalculateRatings
         {
             // delete all ratings and stats
             Console.WriteLine("Delete all ratings");
-            RatingHandler.DeleteAllRatings();
-            Console.WriteLine("Delete all player stats");
             PlayerHandler.DeleteAllPlayerSeasons();
+            RatingHandler.DeleteAllRatings();
 
             // get all games in chronological order
             Console.WriteLine("Get games");

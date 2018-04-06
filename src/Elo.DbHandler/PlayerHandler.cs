@@ -24,6 +24,7 @@ namespace Elo.DbHandler
             {
                 return db.Players
                     .Include(p => p.Seasons)
+                        .ThenInclude(s => s.CurrentPlayerRating)
                     .FirstOrDefault(p => p.Id == id);
             }
         }
@@ -34,6 +35,7 @@ namespace Elo.DbHandler
             {
                 return db.Players
                     .Include(p => p.Seasons)
+                        .ThenInclude(s => s.CurrentPlayerRating)
                     .FirstOrDefault(p => p.Name == name);
             }
         }
@@ -89,6 +91,7 @@ namespace Elo.DbHandler
                 return db.PlayerSeasons
                     .Where(s => s.SeasonId == seasonId)
                     .Include(ps => ps.Player)
+                    .Include(ps => ps.CurrentPlayerRating)
                     .ToList();
             }
         }

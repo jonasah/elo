@@ -19,16 +19,16 @@ namespace Elo.WebApp.Controllers
             var rank = 1;
 
             return PlayerHandler.GetAllPlayerSeasons(seasonName)
-                .OrderByDescending(ps => ps.CurrentRating)
+                .OrderByDescending(ps => ps.CurrentPlayerRating.Rating)
                 .Select(ps => new Models.Dto.PlayerRating
                 {
                     Id = ps.Id,
                     Rank = rank++,
                     Player = ps.Player.Name,
-                    Rating = Math.Round(ps.CurrentRating),
-                    Wins = ps.Wins,
-                    Losses = ps.Losses,
-                    Streak = ps.CurrentStreak
+                    Rating = Math.Round(ps.CurrentPlayerRating.Rating),
+                    Wins = ps.CurrentPlayerRating.Wins,
+                    Losses = ps.CurrentPlayerRating.Losses,
+                    Streak = ps.CurrentPlayerRating.CurrentStreak
                 });
         }
 

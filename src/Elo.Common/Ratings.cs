@@ -21,21 +21,47 @@ namespace Elo.Common
                 var losingPlayerSeason = GetOrCreatePlayerSeason(losingPlayer, season);
 
                 // convert to Elo.Lib.Players and calculate new ratings
-                var p1 = winningPlayerSeason.ToEloLibPlayer();
-                var p2 = losingPlayerSeason.ToEloLibPlayer();
-                p1.WinsAgainst(p2);
+                var winner = winningPlayerSeason.ToEloLibPlayer();
+                var loser = losingPlayerSeason.ToEloLibPlayer();
+                winner.WinsAgainst(loser);
 
-                // update stats
-                winningPlayerSeason.CurrentRating = p1.Rating;
-                ++winningPlayerSeason.Wins;
-                winningPlayerSeason.CurrentStreak = Math.Max(winningPlayerSeason.CurrentStreak + 1, 1);
+                // add new ratings
+                var winningPlayerRating = new PlayerRating
+                {
+                    Rating = winner.Rating,
+                    Wins = winningPlayerSeason.CurrentPlayerRating.Wins + 1,
+                    Losses = winningPlayerSeason.CurrentPlayerRating.Losses,
+                    CurrentStreak = Math.Max(winningPlayerSeason.CurrentPlayerRating.CurrentStreak + 1, 1)
+                };
+                var losingPlayerRating = new PlayerRating
+                {
+                    Rating = loser.Rating,
+                    Wins = losingPlayerSeason.CurrentPlayerRating.Wins,
+                    Losses = losingPlayerSeason.CurrentPlayerRating.Losses + 1,
+                    CurrentStreak = Math.Min(losingPlayerSeason.CurrentPlayerRating.CurrentStreak - 1, -1)
+                };
 
-                losingPlayerSeason.CurrentRating = p2.Rating;
-                ++losingPlayerSeason.Losses;
-                losingPlayerSeason.CurrentStreak = Math.Min(losingPlayerSeason.CurrentStreak - 1, -1);
+                RatingHandler.AddRatings(winningPlayerRating, losingPlayerRating);
+
+                winningPlayerSeason.CurrentPlayerRatingId = winningPlayerRating.Id;
+                winningPlayerSeason.CurrentPlayerRating = null;
+                losingPlayerSeason.CurrentPlayerRatingId = losingPlayerRating.Id;
+                losingPlayerSeason.CurrentPlayerRating = null;
 
                 PlayerHandler.UpdatePlayerSeasons(winningPlayerSeason, losingPlayerSeason);
-                RatingHandler.AddRatings(winningPlayerSeason.CreatePlayerRating(), losingPlayerSeason.CreatePlayerRating());
+
+                RatingHandler.AddPlayerSeasonRatings(
+                    new PlayerSeasonRating
+                    {
+                        PlayerSeasonId = winningPlayerSeason.Id,
+                        PlayerRatingId = winningPlayerSeason.CurrentPlayerRatingId
+                    },
+                    new PlayerSeasonRating
+                    {
+                        PlayerSeasonId = losingPlayerSeason.Id,
+                        PlayerRatingId = losingPlayerSeason.CurrentPlayerRatingId
+                    }
+                );
             }
         }
 
@@ -48,10 +74,15 @@ namespace Elo.Common
                 playerSeason = PlayerHandler.AddPlayerSeason(new PlayerSeason
                 {
                     PlayerId = player.Id,
-                    SeasonId = season.Id
+                    SeasonId = season.Id,
+                    CurrentPlayerRating = new PlayerRating()
                 });
 
-                RatingHandler.AddRating(playerSeason.CreatePlayerRating());
+                RatingHandler.AddPlayerSeasonRatings(new PlayerSeasonRating
+                {
+                    PlayerSeasonId = playerSeason.Id,
+                    PlayerRatingId = playerSeason.CurrentPlayerRatingId
+                });
             }
 
             return playerSeason;

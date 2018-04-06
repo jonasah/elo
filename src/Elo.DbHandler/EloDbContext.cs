@@ -11,6 +11,7 @@ namespace Elo.DbHandler
         public DbSet<PlayerRating> Ratings { get; set; }
         public DbSet<Season> Seasons { get; set; }
         public DbSet<PlayerSeason> PlayerSeasons { get; set; }
+        public DbSet<PlayerSeasonRating> PlayerSeasonRatings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,6 +29,16 @@ namespace Elo.DbHandler
             modelBuilder.Entity<Season>()
                 .HasIndex(s => s.Name)
                 .IsUnique();
+
+            modelBuilder.Entity<PlayerSeason>()
+                .HasOne(ps => ps.CurrentPlayerRating)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PlayerSeasonRating>()
+                .HasOne(psr => psr.PlayerRating)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // set default values for Created properties
             modelBuilder.Entity<Player>()
@@ -51,6 +62,10 @@ namespace Elo.DbHandler
                 .HasDefaultValueSql("getutcdate()");
 
             modelBuilder.Entity<PlayerSeason>()
+                .Property(p => p.Created)
+                .HasDefaultValueSql("getutcdate()");
+
+            modelBuilder.Entity<PlayerSeasonRating>()
                 .Property(p => p.Created)
                 .HasDefaultValueSql("getutcdate()");
         }
