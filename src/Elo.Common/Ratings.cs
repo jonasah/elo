@@ -28,6 +28,7 @@ namespace Elo.Common
                 // add new ratings
                 var winningPlayerRating = new PlayerRating
                 {
+                    GameId = game.Id,
                     Rating = winner.Rating,
                     Wins = winningPlayerSeason.CurrentPlayerRating.Wins + 1,
                     Losses = winningPlayerSeason.CurrentPlayerRating.Losses,
@@ -35,6 +36,7 @@ namespace Elo.Common
                 };
                 var losingPlayerRating = new PlayerRating
                 {
+                    GameId = game.Id,
                     Rating = loser.Rating,
                     Wins = losingPlayerSeason.CurrentPlayerRating.Wins,
                     Losses = losingPlayerSeason.CurrentPlayerRating.Losses + 1,

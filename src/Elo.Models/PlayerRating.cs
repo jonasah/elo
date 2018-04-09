@@ -6,6 +6,9 @@ namespace Elo.Models
     [Table("PlayerRatings")]
     public class PlayerRating : ModelBase
     {
+        public int? GameId { get; set; }
+        public virtual Game Game { get; set; }
+
         [Required]
         public double Rating { get; set; } = Lib.Settings.DefaultRating;
 
