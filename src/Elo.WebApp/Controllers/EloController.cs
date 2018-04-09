@@ -28,7 +28,8 @@ namespace Elo.WebApp.Controllers
                     Rating = Math.Round(ps.CurrentPlayerRating.Rating),
                     Wins = ps.CurrentPlayerRating.Wins,
                     Losses = ps.CurrentPlayerRating.Losses,
-                    Streak = ps.CurrentPlayerRating.CurrentStreak
+                    Streak = ps.CurrentPlayerRating.CurrentStreak,
+                    RatingChange = Math.Round(ps.CurrentPlayerRating.RatingChange)
                 });
         }
 

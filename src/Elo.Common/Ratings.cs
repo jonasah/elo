@@ -30,6 +30,7 @@ namespace Elo.Common
                 {
                     GameId = game.Id,
                     Rating = winner.Rating,
+                    RatingChange = winner.Rating - winningPlayerSeason.CurrentPlayerRating.Rating,
                     Wins = winningPlayerSeason.CurrentPlayerRating.Wins + 1,
                     Losses = winningPlayerSeason.CurrentPlayerRating.Losses,
                     CurrentStreak = Math.Max(winningPlayerSeason.CurrentPlayerRating.CurrentStreak + 1, 1)
@@ -38,6 +39,7 @@ namespace Elo.Common
                 {
                     GameId = game.Id,
                     Rating = loser.Rating,
+                    RatingChange = loser.Rating - losingPlayerSeason.CurrentPlayerRating.Rating,
                     Wins = losingPlayerSeason.CurrentPlayerRating.Wins,
                     Losses = losingPlayerSeason.CurrentPlayerRating.Losses + 1,
                     CurrentStreak = Math.Min(losingPlayerSeason.CurrentPlayerRating.CurrentStreak - 1, -1)

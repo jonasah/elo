@@ -11,5 +11,6 @@
         public int Losses { get; set; }
         public double Pct => (double)Wins / GamesPlayed;
         public int Streak { get; set; }
+        public double RatingChange { get; set; }
     }
 }

@@ -26,7 +26,7 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
                 <tr>
                     <th className="text-center">Rank</th>
                     <th className="text-center">Player</th>
-                    <th className="text-center">Rating</th>
+                    <th className="text-center"><abbr title="Change from last game in parenthesis">Rating</abbr></th>
                     <th className="text-center">Games</th>
                     <th className="text-center">Win</th>
                     <th className="text-center">Loss</th>
@@ -41,7 +41,11 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
                         <td className="text-center">
                             <PlayerStatsLink player={rating.player}/>
                         </td>
-                        <td className="text-center">{rating.rating}</td>
+                        <td className="text-center">
+                            {rating.rating}
+                            &nbsp;
+                            {this.getRatingChange(rating.ratingChange)}
+                        </td>
                         <td className="text-center">{rating.gamesPlayed}</td>
                         <td className="text-center">{rating.wins}</td>
                         <td className="text-center">{rating.losses}</td>
@@ -66,6 +70,13 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
                     props.onRatingsUpdate();
                 }
             });
+    }
+
+    getRatingChange(ratingChange: number) {
+        var ratingChangeString = (ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`);
+        var textClass = (ratingChange > 0 ? "text-success" : "text-danger");
+
+        return <small>(<span className={textClass}>{ratingChangeString}</span>)</small>;
     }
 
     getStreakString(streak: number) {

@@ -9,6 +9,7 @@
         losses: number;
         pct: number;
         streak: number;
+        ratingChange: number;
     }
 
     export interface ExpectedScore {

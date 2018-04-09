@@ -11,7 +11,8 @@ namespace Elo.Models
 
         [Required]
         public double Rating { get; set; } = Lib.Settings.DefaultRating;
-
+        [Required]
+        public double RatingChange { get; set; }
         [Required]
         public int Wins { get; set; }
         [Required]
