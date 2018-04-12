@@ -19,7 +19,7 @@ namespace Elo.RecalculateRatings
             var games = GameHandler.GetGamesAfter(DateTime.MinValue, SortOrder.Ascending);
 
             // calculate new ratings
-            Console.WriteLine("Calculate new ratings");
+            Console.WriteLine($"Calculate new ratings for {games.Count} games");
             games.ForEach(g => Ratings.CalculateNewRatings(g));
         }
     }
