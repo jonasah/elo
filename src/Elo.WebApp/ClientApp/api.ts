@@ -40,8 +40,14 @@
 
 /* GET methods */
 
-export function getRatings(season: string): Promise<Models.Rating[]> {
-    return get('ratings/' + season);
+export function getRatings(season: string,minGamesPlayed?: number): Promise<Models.Rating[]> {
+    var relativeUrl = 'ratings/' + season;
+
+    if (minGamesPlayed !== undefined) {
+        relativeUrl += `?minGamesPlayed=${minGamesPlayed}`
+    }
+
+    return get(relativeUrl);
 }
 
 export function getPlayers(): Promise<string[]> {

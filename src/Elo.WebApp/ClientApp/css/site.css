@@ -19,3 +19,8 @@
 .form-inline > * {
     margin-right: 3px;
 }
+
+.show-all-players-label {
+    font-weight: normal;
+    margin-bottom: 0px;
+}

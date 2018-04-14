@@ -6,28 +6,50 @@ import { SeasonSelect } from '../Seasons/SeasonSelect';
 interface RatingsProps {
     headerSize?: number;
     onlyActiveSeasons?: boolean;
+    enablePlayerFilter?: boolean;
 }
 
 interface RatingsState {
     lastUpdate: Date;
     selectedSeason: string;
+    playerFilterActive: boolean;
 }
 
 export class Ratings extends React.Component<RatingsProps, RatingsState> {
     constructor(props: RatingsProps) {
         super(props);
 
-        this.state = { lastUpdate: new Date(), selectedSeason: '' };
+        this.state = {
+            lastUpdate: new Date(),
+            selectedSeason: '',
+            playerFilterActive: props.enablePlayerFilter === true
+        };
 
         this.onRatingsUpdated = this.onRatingsUpdated.bind(this);
         this.onSeasonSelected = this.onSeasonSelected.bind(this);
+        this.togglePlayerFilter = this.togglePlayerFilter.bind(this);
     }
 
     public render() {
-        return <div>
-            {this.getHeader()}
-            <LastUpdateText timestamp={this.state.lastUpdate} />
-            <RatingsTable season={this.state.selectedSeason} onRatingsUpdate={this.onRatingsUpdated} />
+        return <div className="row">
+            <div className="col-sm-12">
+                {this.getHeader()}
+            </div>
+            <div className="col-sm-6">
+                <LastUpdateText timestamp={this.state.lastUpdate} />
+            </div>
+            <div className="col-sm-6 text-right">
+                {this.props.enablePlayerFilter === true &&
+                    <div className="checkbox-inline">
+                        <label className="show-all-players-label">
+                            <input type="checkbox" onChange={this.togglePlayerFilter} />Show all players
+                        </label>
+                    </div>
+                }
+            </div>
+            <div className="col-sm-12">
+                <RatingsTable season={this.state.selectedSeason} onRatingsUpdate={this.onRatingsUpdated} playerFilterActive={this.state.playerFilterActive} />
+            </div>
         </div>;
     }
 
@@ -54,5 +76,11 @@ export class Ratings extends React.Component<RatingsProps, RatingsState> {
 
     onSeasonSelected(season: string) {
         this.setState({ selectedSeason: season });
+    }
+
+    togglePlayerFilter() {
+        this.setState((prevState: RatingsState, props: RatingsProps) => {
+            return { playerFilterActive: !prevState.playerFilterActive }
+        });
     }
 }

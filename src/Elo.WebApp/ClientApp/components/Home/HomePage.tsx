@@ -15,7 +15,7 @@ export class HomePage extends React.Component<RouteComponentProps<{}>, {}> {
             </div>
             <div className="row">
                 <div className="col-sm-8 col-md-9">
-                    <Ratings headerSize={2} onlyActiveSeasons={true} />
+                    <Ratings headerSize={2} onlyActiveSeasons={true} enablePlayerFilter={true} />
                 </div>
                 <div className="col-sm-4 col-md-3">
                     <LatestGames

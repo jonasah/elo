@@ -6,6 +6,7 @@ import * as Api from '../../api';
 interface RatingsTableProps {
     season: string;
     onRatingsUpdate?: () => void;
+    playerFilterActive: boolean;
 }
 
 interface RatingsTableState {
@@ -62,7 +63,7 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
             return;
         }
 
-        Api.getRatings(props.season)
+        Api.getRatings(props.season, props.playerFilterActive ? 5 : 1)
             .then(data => {
                 this.setState({ ratings: data });
 
@@ -97,7 +98,7 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
     }
 
     componentWillReceiveProps(nextProps: Readonly<RatingsTableProps>) {
-        if (this.props.season != nextProps.season) {
+        if (this.props.season != nextProps.season || this.props.playerFilterActive != nextProps.playerFilterActive) {
             this.setState({ ratings: [] });
             this.fetchRatings(nextProps);
         }

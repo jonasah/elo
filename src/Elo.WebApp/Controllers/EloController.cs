@@ -14,11 +14,12 @@ namespace Elo.WebApp.Controllers
     public class EloController : Controller
     {
         [HttpGet("ratings/{season}")]
-        public IEnumerable<Models.Dto.PlayerRating> GetPlayerRatings([FromRoute(Name = "season")]string seasonName)
+        public IEnumerable<Models.Dto.PlayerRating> GetPlayerRatings([FromRoute(Name = "season")]string seasonName, int minGamesPlayed = 1)
         {
             var rank = 1;
 
             return PlayerHandler.GetAllPlayerSeasons(seasonName)
+                .Where(p => p.CurrentPlayerRating.GamesPlayed >= minGamesPlayed)
                 .OrderByDescending(ps => ps.CurrentPlayerRating.Rating)
                 .Select(ps => new Models.Dto.PlayerRating
                 {
