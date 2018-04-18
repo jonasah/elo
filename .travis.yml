@@ -1,0 +1,6 @@
+language: csharp
+mono: none
+dotnet: 2.0.3
+script:
+  - npm install src/Elo.WebApp/
+  - dotnet build src/Elo.sln -c Release
