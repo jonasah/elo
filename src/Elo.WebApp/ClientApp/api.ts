@@ -23,6 +23,7 @@
         wins: number;
         losses: number;
         pct: number;
+        ratingChange: number;
     }
 
     export interface Game {

@@ -45,9 +45,10 @@ namespace Elo.WebApp.Controllers
             [FromRoute(Name = "player")]string playerName,
             [FromRoute(Name = "season")]string seasonName)
         {
+            var player = PlayerHandler.GetPlayerByName(playerName);
             var season = SeasonHandler.GetSeason(seasonName);
 
-            if (season == null)
+            if (player == null || season == null)
             {
                 return new Head2HeadRecord[0];
             }
@@ -56,14 +57,19 @@ namespace Elo.WebApp.Controllers
                 .GetGamesByPlayer(playerName, SortOrder.Descending)
                 .FindAll(g => season.IsActive(g.Created));
 
+            var ratings = RatingHandler.GetRatingsByPlayerAndSeason(player, season)
+                .Where(pr => pr.GameId != null)
+                .ToDictionary(pr => pr.GameId);
+
             return games
                 .SelectMany(g => g.Scores.Where(gs => gs.Player.Name != playerName))
-                .GroupBy(gs => gs.Player)
+                .GroupBy(gs => gs.Player) // group by opponent
                 .Select(g => new Head2HeadRecord
                 {
                     Opponent = g.Key.Name,
                     Wins = g.Count(gs => gs.Loss), // player's wins are losses for opponent
-                    Losses = g.Count(gs => gs.Win) // player's losses are wins for opponent
+                    Losses = g.Count(gs => gs.Win), // player's losses are wins for opponent
+                    RatingChange = Math.Round(g.Sum(gs => ratings[gs.GameId].RatingChange)) // summing player's rating changes
                 })
                 .OrderBy(h2h => h2h.Opponent);
         }

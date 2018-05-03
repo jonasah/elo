@@ -1,4 +1,5 @@
 ﻿using Elo.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,20 @@ namespace Elo.DbHandler
         }
 
         public static void AddRatings(params PlayerRating[] ratings) => AddRatings(ratings.AsEnumerable());
+
+        public static List<PlayerRating> GetRatingsByPlayerAndSeason(Player player, Season season)
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.PlayerSeasons
+                    .Where(ps => ps.PlayerId == player.Id && ps.SeasonId == season.Id)
+                    .Include(ps => ps.Ratings)
+                        .ThenInclude(psr => psr.PlayerRating)
+                    .SelectMany(ps => ps.Ratings)
+                    .Select(psr => psr.PlayerRating)
+                    .ToList();
+            }
+        }
 
         public static void DeleteRatingsAfter(DateTime timestamp)
         {

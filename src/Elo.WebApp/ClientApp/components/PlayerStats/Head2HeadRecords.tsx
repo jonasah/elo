@@ -29,6 +29,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                         <th className="text-center">Wins</th>
                         <th className="text-center">Losses</th>
                         <th className="text-center">Pct</th>
+                        <th className="text-center">Rating</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                             <td className="text-center">{h2h.wins}</td>
                             <td className="text-center">{h2h.losses}</td>
                             <td className="text-center">{(100 * h2h.pct).toFixed(1)}</td>
+                            <td className="text-center">{this.getRatingChange(h2h.ratingChange)}</td>
                         </tr>
                     )}
                 </tbody>
@@ -55,6 +57,13 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
 
         Api.getHead2HeadRecords(props.player, props.season)
             .then(data => this.setState({ records: data }));
+    }
+
+    getRatingChange(ratingChange: number) {
+        var ratingChangeString = (ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`);
+        var textClass = (ratingChange > 0 ? "text-success" : "text-danger");
+
+        return <span className={textClass}>{ratingChangeString}</span>;
     }
 
     componentWillMount() {

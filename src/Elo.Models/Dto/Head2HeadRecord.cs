@@ -11,5 +11,6 @@ namespace Elo.Models.Dto
         public int Wins { get; set; }
         public int Losses { get; set; }
         public double Pct => (double)Wins / GamesPlayed;
+        public double RatingChange { get; set; }
     }
 }
