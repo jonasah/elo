@@ -20,7 +20,15 @@ namespace Elo.RecalculateRatings
 
             // calculate new ratings
             Console.WriteLine($"Calculate new ratings for {games.Count} games");
-            games.ForEach(g => Ratings.CalculateNewRatings(g));
+            var completed = 0;
+
+            foreach (var game in games)
+            {
+                Ratings.CalculateNewRatings(game);
+                Console.Write($"\rProgress: {++completed / (double)games.Count:P1}");
+            }
+
+            Console.WriteLine();
         }
     }
 }
