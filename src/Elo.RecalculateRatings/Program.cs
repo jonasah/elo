@@ -25,7 +25,9 @@ namespace Elo.RecalculateRatings
             foreach (var game in games)
             {
                 Ratings.CalculateNewRatings(game);
-                Console.Write($"\rProgress: {++completed / (double)games.Count:P1}");
+
+                ++completed;
+                Console.Write($"\rProgress: {completed}/{games.Count} ({completed / (double)games.Count:P1})");
             }
 
             Console.WriteLine();
