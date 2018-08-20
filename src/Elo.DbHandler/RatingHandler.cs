@@ -33,12 +33,9 @@ namespace Elo.DbHandler
             using (var db = new EloDbContext())
             {
                 return db.PlayerSeasons
-                    .Where(ps => ps.PlayerId == player.Id && ps.SeasonId == season.Id)
-                    .Include(ps => ps.Ratings)
-                        .ThenInclude(psr => psr.PlayerRating)
-                    .SelectMany(ps => ps.Ratings)
-                    .Select(psr => psr.PlayerRating)
-                    .ToList();
+                    .Include(ps => ps.PlayerRatings)
+                    .First(ps => ps.PlayerId == player.Id && ps.SeasonId == season.Id) // should only be one
+                    .PlayerRatings;
             }
         }
 
@@ -55,17 +52,5 @@ namespace Elo.DbHandler
         {
             DeleteRatingsAfter(DateTime.MinValue);
         }
-
-        public static void AddPlayerSeasonRatings(IEnumerable<PlayerSeasonRating> playerSeasonRatings)
-        {
-            using (var db = new EloDbContext())
-            {
-                db.PlayerSeasonRatings.AddRange(playerSeasonRatings);
-                db.SaveChanges();
-            }
-        }
-
-        public static void AddPlayerSeasonRatings(params PlayerSeasonRating[] playerSeasonRatings) =>
-            AddPlayerSeasonRatings(playerSeasonRatings.AsEnumerable());
     }
 }

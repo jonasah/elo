@@ -6,6 +6,9 @@ namespace Elo.Models
     [Table("PlayerRatings")]
     public class PlayerRating : ModelBase
     {
+        public int PlayerSeasonId { get; set; }
+        public virtual PlayerSeason PlayerSeason { get; set; }
+
         public int? GameId { get; set; }
         public virtual Game Game { get; set; }
 
