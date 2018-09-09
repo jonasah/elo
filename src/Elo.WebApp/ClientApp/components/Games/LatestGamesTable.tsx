@@ -96,7 +96,7 @@ export class LatestGamesTable extends React.Component<GamesTableProps, GamesTabl
     }
 
     componentDidMount() {
-        this.timerId = setInterval(() => this.fetchGames(this.props), 30*1000);
+        this.timerId = setInterval(() => this.fetchGames(this.props), 10*1000);
     }
 
     componentWillReceiveProps(nextProps: Readonly<GamesTableProps>) {
