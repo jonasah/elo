@@ -29,6 +29,12 @@ namespace Elo.DbHandler
                 .HasIndex(s => s.Name)
                 .IsUnique();
 
+            // delete player ratings on game deletion
+            modelBuilder.Entity<PlayerRating>()
+                .HasOne(pr => pr.Game)
+                .WithMany(g => g.PlayerRatings)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // set default values for Created properties
             modelBuilder.Entity<Player>()
                 .Property(p => p.Created)

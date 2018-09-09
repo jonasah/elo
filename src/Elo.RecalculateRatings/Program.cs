@@ -16,7 +16,7 @@ namespace Elo.RecalculateRatings
 
             // get all games in chronological order
             Console.WriteLine("Get games");
-            var games = GameHandler.GetGamesAfter(DateTime.MinValue, SortOrder.Ascending);
+            var games = GameHandler.GetGamesAfter(int.MinValue, SortOrder.Ascending);
 
             // calculate new ratings
             Console.WriteLine($"Calculate new ratings for {games.Count} games");

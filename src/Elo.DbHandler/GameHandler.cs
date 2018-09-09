@@ -78,16 +78,17 @@ namespace Elo.DbHandler
                 return db.Games
                     .Include(g => g.Scores)
                         .ThenInclude(gs => gs.Player)
+                    .Include(g => g.PlayerRatings)
                     .FirstOrDefault(g => g.Id == id);
             }
         }
 
-        public static List<Game> GetGamesAfter(DateTime timestamp, SortOrder sortOrder)
+        public static List<Game> GetGamesAfter(int gameId, SortOrder sortOrder)
         {
             using (var db = new EloDbContext())
             {
                 return db.Games
-                    .Where(g => g.Created > timestamp)
+                    .Where(g => g.Id > gameId)
                     .Include(g => g.Scores)
                         .ThenInclude(gs => gs.Player)
                     .OrderBy(g => g.Created, sortOrder)

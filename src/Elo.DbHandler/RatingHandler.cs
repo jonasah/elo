@@ -34,23 +34,36 @@ namespace Elo.DbHandler
             {
                 return db.PlayerSeasons
                     .Include(ps => ps.PlayerRatings)
-                    .First(ps => ps.PlayerId == player.Id && ps.SeasonId == season.Id) // should only be one
-                    .PlayerRatings;
+                    .FirstOrDefault(ps => ps.PlayerId == player.Id && ps.SeasonId == season.Id)? // zero or one
+                    .PlayerRatings ?? new List<PlayerRating>();
             }
         }
 
-        public static void DeleteRatingsAfter(DateTime timestamp)
+        public static void DeleteRatingsAfter(int ratingId, bool deleteDefaultRatings = true)
         {
             using (var db = new EloDbContext())
             {
-                db.Ratings.RemoveRange(db.Ratings.Where(r => r.Created > timestamp));
+                db.Ratings.RemoveRange(db.Ratings.Where(r => r.Id > ratingId && (deleteDefaultRatings || r.GameId != null)));
                 db.SaveChanges();
             }
         }
 
         public static void DeleteAllRatings()
         {
-            DeleteRatingsAfter(DateTime.MinValue);
+            DeleteRatingsAfter(int.MinValue);
+        }
+
+        public static List<PlayerRating> GetLatestRatingsPerPlayerSeason()
+        {
+            using (var db = new EloDbContext())
+            {
+                return db.Ratings
+                    .Include(pr => pr.PlayerSeason)
+                        .ThenInclude(ps => ps.Season)
+                    .GroupBy(pr => pr.PlayerSeasonId)
+                    .Select(g => g.OrderByDescending(pr => pr.Id).First()) // take latest rating record
+                    .ToList();
+            }
         }
     }
 }

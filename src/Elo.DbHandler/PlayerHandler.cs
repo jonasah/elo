@@ -93,6 +93,15 @@ namespace Elo.DbHandler
             }
         }
 
+        public static void DeletePlayers(IEnumerable<Player> players)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.Players.RemoveRange(players);
+                db.SaveChanges();
+            }
+        }
+
         public static List<PlayerSeason> GetAllPlayerSeasons(string seasonName)
         {
             var season = SeasonHandler.GetSeason(seasonName);
@@ -127,6 +136,15 @@ namespace Elo.DbHandler
 
         public static void UpdatePlayerSeasons(params PlayerSeason[] playerSeasons) =>
             UpdatePlayerSeasons(playerSeasons.AsEnumerable());
+
+        public static void DeletePlayerSeasons(IEnumerable<PlayerSeason> playerSeasons)
+        {
+            using (var db = new EloDbContext())
+            {
+                db.PlayerSeasons.RemoveRange(playerSeasons);
+                db.SaveChanges();
+            }
+        }
 
         public static void DeleteAllPlayerSeasons()
         {

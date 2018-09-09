@@ -31,6 +31,7 @@
         winner: string;
         loser: string;
         date: string;
+        canBeDeleted: boolean;
     }
 
     export interface GameResult {

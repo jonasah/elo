@@ -14,5 +14,8 @@ namespace Elo.Models
 
         public GameScore WinningGameScore => Scores.FirstOrDefault(gs => gs.Win);
         public GameScore LosingGameScore => Scores.FirstOrDefault(gs => gs.Loss);
+
+        [MinLength(2)]
+        public virtual List<PlayerRating> PlayerRatings { get; set; } = new List<PlayerRating>();
     }
 }

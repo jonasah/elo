@@ -141,13 +141,16 @@ namespace Elo.WebApp.Controllers
         [HttpGet("games")]
         public IEnumerable<Models.Dto.Game> GetGames(int page = 1, int pageSize = 20)
         {
+            var count = 0;
+
             return GameHandler.GetGames(page, pageSize, SortOrder.Descending)
                 .Select(g => new Models.Dto.Game
                 {
                     Id = g.Id,
                     Winner = g.WinningGameScore.Player.Name,
                     Loser = g.LosingGameScore.Player.Name,
-                    Date = $"{g.Created.ToString()} UTC"
+                    Date = $"{g.Created.ToString()} UTC",
+                    CanBeDeleted = ++count <= 10
                 });
         }
 
@@ -169,9 +172,6 @@ namespace Elo.WebApp.Controllers
         {
             try
             {
-                // FIXME: delete game not working
-                throw new NotImplementedException();
-
                 // get the game
                 var game = GameHandler.GetGame(id);
 
@@ -180,17 +180,42 @@ namespace Elo.WebApp.Controllers
                     throw new ArgumentException("No such game");
                 }
 
-                // delete the game (and its scores)
+                // delete the game (incl game scores and player ratings)
                 GameHandler.DeleteGame(game);
 
-                // delete all ratings from this game and later
-                RatingHandler.DeleteRatingsAfter(game.Created);
+                // delete ratings from later games
+                RatingHandler.DeleteRatingsAfter(game.PlayerRatings[0].Id, deleteDefaultRatings: false);
+
+                // reset current ratings in PlayerSeasons
+                var lastPlayerRatings = RatingHandler.GetLatestRatingsPerPlayerSeason();
+                var updatedPlayerSeasons = lastPlayerRatings
+                    .Where(pr => !pr.PlayerSeason.Season.HasEnded(game.Created)) // current and future seasons
+                    .Select(pr =>
+                    {
+                        var playerSeason = pr.PlayerSeason;
+                        playerSeason.Season = null;
+                        playerSeason.Rating = pr.Rating;
+                        playerSeason.RatingChange = pr.RatingChange;
+                        playerSeason.Wins = pr.Wins;
+                        playerSeason.Losses = pr.Losses;
+                        playerSeason.CurrentStreak = pr.CurrentStreak;
+                        return playerSeason;
+                    })
+                    .ToList();
+
+                PlayerHandler.UpdatePlayerSeasons(updatedPlayerSeasons.Where(ps => ps.GamesPlayed > 0));
+                PlayerHandler.DeletePlayerSeasons(updatedPlayerSeasons.Where(ps => ps.GamesPlayed == 0));
 
                 // get all games after the deleted game
-                var games = GameHandler.GetGamesAfter(game.Created, SortOrder.Ascending);
+                var games = GameHandler.GetGamesAfter(game.Id, SortOrder.Ascending);
 
                 // recalculate ratings
                 games.ForEach(g => Ratings.CalculateNewRatings(g));
+
+                // delete players with no games
+                var players = PlayerHandler.GetAllPlayers()
+                    .Where(p => p.Seasons.Count == 0);
+                PlayerHandler.DeletePlayers(players);
 
                 return true;
             }

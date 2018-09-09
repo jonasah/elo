@@ -10,5 +10,6 @@ namespace Elo.Models.Dto
         public string Winner { get; set; }
         public string Loser { get; set; }
         public string Date { get; set; }
+        public bool CanBeDeleted { get; set; }
     }
 }
