@@ -75,7 +75,7 @@ export class RatingsTable extends React.Component<RatingsTableProps, RatingsTabl
 
     getRatingChange(ratingChange: number) {
         var ratingChangeString = (ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`);
-        var textClass = (ratingChange > 0 ? "text-success" : "text-danger");
+        var textClass = (ratingChange > 0 ? "text-success" : (ratingChange < 0 ? "text-danger" : ""));
 
         return <small>(<span className={textClass}>{ratingChangeString}</span>)</small>;
     }
