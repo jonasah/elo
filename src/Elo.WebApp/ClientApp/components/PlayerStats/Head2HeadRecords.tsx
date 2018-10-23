@@ -29,7 +29,7 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                         <th className="text-center">Wins</th>
                         <th className="text-center">Losses</th>
                         <th className="text-center">Pct</th>
-                        <th className="text-center">Rating</th>
+                        <th className="text-center">Rating <small>(avg)</small></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,11 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
                             <td className="text-center">{h2h.wins}</td>
                             <td className="text-center">{h2h.losses}</td>
                             <td className="text-center">{(100 * h2h.pct).toFixed(1)}</td>
-                            <td className="text-center">{this.getRatingChange(h2h.ratingChange)}</td>
+                            <td className="text-center">
+                                {this.getRatingChange(h2h.ratingChange)}
+                                &nbsp;
+                                {this.getRatingChangePerGame(h2h.ratingChange, h2h.gamesPlayed)}
+                            </td>
                         </tr>
                     )}
                 </tbody>
@@ -60,10 +64,16 @@ export class Head2HeadRecords extends React.Component<Head2HeadRecordsProps, Hea
     }
 
     getRatingChange(ratingChange: number) {
-        var ratingChangeString = (ratingChange > 0 ? `+${ratingChange}` : `${ratingChange}`);
-        var textClass = (ratingChange > 0 ? "text-success" : "text-danger");
+        var prefix = (ratingChange > 0 ? "+" : "");
+        var textClass = (ratingChange > 0 ? "text-success" : (ratingChange < 0 ? "text-danger" : ""));
 
-        return <span className={textClass}>{ratingChangeString}</span>;
+        return <span className={textClass}>{prefix}{ratingChange}</span>;
+    }
+
+    getRatingChangePerGame(ratingChange: number, gamesPlayed: number) {
+        var ratingChangePerGame = ratingChange / gamesPlayed;
+
+        return <small>(<span>{ratingChangePerGame.toFixed(1)}</span>)</small>;
     }
 
     componentWillMount() {
