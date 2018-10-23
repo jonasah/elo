@@ -34,7 +34,7 @@ export class ExpectedScores extends React.Component<ExpectedScoresProps, Expecte
                             <td className="text-center">
                                 <PlayerStatsLink player={score.opponent} />
                             </td>
-                            <td className="text-center">{score.score.toFixed(2)}</td>
+                            <td className="text-center">{score.score.toPrecision(3)}</td>
                         </tr>
                     )}
                 </tbody>
