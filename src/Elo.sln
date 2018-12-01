@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elo.Lib", "Elo.Lib\Elo.Lib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elo.RecalculateRatings", "Elo.RecalculateRatings\Elo.RecalculateRatings.csproj", "{680D9B29-955C-4653-B414-1342856504CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elo.Common", "Elo.Common\Elo.Common.csproj", "{F7583761-7E95-4BDD-AB5F-E49EEEC67B0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Elo.Common", "Elo.Common\Elo.Common.csproj", "{F7583761-7E95-4BDD-AB5F-E49EEEC67B0A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{143F28BB-B6CA-4D22-9861-FE228607DF5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{680D9B29-955C-4653-B414-1342856504CC} = {143F28BB-B6CA-4D22-9861-FE228607DF5F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21032E13-636F-4D0A-8B6E-4AC328E16FCE}
