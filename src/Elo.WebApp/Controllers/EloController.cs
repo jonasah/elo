@@ -225,25 +225,13 @@ namespace Elo.WebApp.Controllers
             }
         }
 
-        [HttpPost("season")]
-        public bool AddSeason([FromBody]SeasonPost seasonPost)
-        {
-            SeasonHandler.AddSeason(new Season
-            {
-                Name = seasonPost.Name,
-                StartDate = seasonPost.StartDate,
-                EndDate = seasonPost.EndDate
-            });
-
-            return true;
-        }
-
         [HttpGet("activeseasons")]
         public IEnumerable<string> GetActiveSeasons()
         {
             return SeasonHandler
                 .GetActiveSeasons(DateTimeOffset.UtcNow)
                 .OrderBy(s => s.StartDate)
+                .ThenByDescending(s => s.EndDate)
                 .Select(s => s.Name);
         }
 
@@ -253,6 +241,7 @@ namespace Elo.WebApp.Controllers
             return SeasonHandler
                 .GetActiveSeasonsByPlayer(DateTimeOffset.UtcNow, playerName)
                 .OrderBy(s => s.StartDate)
+                .ThenByDescending(s => s.EndDate)
                 .Select(s => s.Name);
         }
 
@@ -262,6 +251,7 @@ namespace Elo.WebApp.Controllers
             return SeasonHandler
                 .GetStartedSeasons(DateTimeOffset.UtcNow)
                 .OrderBy(s => s.StartDate)
+                .ThenByDescending(s => s.EndDate)
                 .Select(s => s.Name);
         }
 
@@ -271,6 +261,7 @@ namespace Elo.WebApp.Controllers
             return SeasonHandler
                 .GetStartedSeasonsByPlayer(DateTimeOffset.UtcNow, playerName)
                 .OrderBy(s => s.StartDate)
+                .ThenByDescending(s => s.EndDate)
                 .Select(s => s.Name);
         }
 
