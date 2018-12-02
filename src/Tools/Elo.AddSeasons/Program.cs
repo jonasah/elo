@@ -8,11 +8,9 @@ namespace Elo.AddSeasons
     {
         static void Main(string[] args)
         {
-            //AddYear(2019);
-            //AddQuarter(2019, 1);
-            //AddQuarter(2019, 2);
-            //AddQuarter(2019, 3);
-            //AddQuarter(2019, 4);
+            AddMaster();
+            AddYear(2018, addQuarters: true);
+            AddYear(2019, addQuarters: true);
 
             Console.WriteLine("DONE");
             Console.ReadLine();
@@ -23,26 +21,24 @@ namespace Elo.AddSeasons
             AddSeasonIfNotExists("Master", DateTimeOffset.MinValue, DateTimeOffset.MaxValue);
         }
 
-        static void AddYear(int year)
+        static void AddYear(int year, bool addQuarters = false)
         {
             var startDate = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
             var endDate = startDate.AddYears(1);
 
             AddSeasonIfNotExists(year.ToString(), startDate, endDate);
-        }
 
-        static void AddQuarter(int year, int quarter)
-        {
-            if (quarter < 1 || quarter > 4)
+            if (addQuarters)
             {
-                throw new ArgumentOutOfRangeException(nameof(quarter), quarter, "Invalid quarter value. Must be between 1 and 4 inclusive.");
+                for (var quarter = 1; quarter <= 4; ++quarter)
+                {
+                    var quarterStartMonth = (quarter - 1) * 3 + 1;
+                    var quarterStartDate = new DateTimeOffset(year, quarterStartMonth, 1, 0, 0, 0, TimeSpan.Zero);
+                    var quarterEndDate = quarterStartDate.AddMonths(3);
+
+                    AddSeasonIfNotExists($"{year} Q{quarter}", quarterStartDate, quarterEndDate);
+                }
             }
-
-            var startMonth = (quarter - 1) * 3 + 1;
-            var startDate = new DateTimeOffset(year, startMonth, 1, 0, 0, 0, TimeSpan.Zero);
-            var endDate = startDate.AddMonths(3);
-
-            AddSeasonIfNotExists($"{year} Q{quarter}", startDate, endDate);
         }
 
         static bool AddSeasonIfNotExists(string name, DateTimeOffset startDate, DateTimeOffset endDate)
